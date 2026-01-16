@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OCS NFI Periodik Job Monitor</title>
+
+<style>
+  :root {
+    --primary: #D0BCFF;
+    --on-primary: #381E72;
+    --primary-container: #4F378B;
+    --on-primary-container: #EADDFF;
+    --background: #1C1B1F;
+    --surface: #25232A;
+    --surface-variant: #49454F;
+    --on-surface: #E6E1E5;
+    --on-surface-variant: #CAC4D0;
+    --today-bg: #2D2933;
+  }
+
+  body { 
+    font-family: 'Segoe UI', Roboto, sans-serif; 
+    background: var(--background); 
+    margin: 0; 
+    color: var(--on-surface); 
+  }
+
+  header { 
+    background: var(--surface); 
+    color: var(--primary); 
+    padding: 20px; 
+    text-align: center; 
+    border-bottom: 1px solid var(--surface-variant);
+  }
+  
+  .container { padding: 15px; max-width: 600px; margin: auto; padding-bottom: 100px; }
+  
+  .filter-container { 
+    background: var(--surface); 
+    padding: 16px; border-radius: 24px; 
+    margin-bottom: 20px; border: 1px solid var(--surface-variant); 
+  }
+  .filter { display: flex; flex-direction: column; gap: 12px; }
+  .filter-row { display: flex; gap: 10px; }
+  .filter-group { flex: 1; }
+  .filter-group label { 
+    font-size: 11px; font-weight: 600; color: var(--primary); 
+    display: block; margin-bottom: 6px; text-transform: uppercase; 
+  }
+  .filter select, .filter input { 
+    width: 100%; padding: 12px; border-radius: 12px; 
+    border: 1px solid var(--surface-variant); background: var(--background); 
+    color: var(--on-surface); outline: none; font-size: 14px; box-sizing: border-box;
+  }
+
+  /* CARD STYLE */
+  .card { 
+    background: var(--surface); border-radius: 24px; padding: 20px; 
+    margin-bottom: 16px; border: 1px solid var(--surface-variant);
+  }
+  .card.today { 
+    background: var(--today-bg); 
+    border: 1.5px solid var(--primary); 
+  }
+
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+  .job { font-size: 17px; font-weight: 600; color: var(--primary); flex: 1; }
+  .today-badge {
+    background: var(--primary-container); color: var(--on-primary-container);
+    padding: 4px 12px; border-radius: 100px; font-size: 10px; font-weight: 700;
+  }
+  .date-label { font-size: 12px; color: var(--on-surface-variant); }
+
+  .card-content { font-size: 14px; line-height: 1.8; margin-bottom: 20px; }
+  .info-row { display: flex; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 4px 0; }
+  .label { font-weight: 500; color: var(--primary); width: 140px; }
+  .value { color: var(--on-surface); }
+
+  .btn-lapor-trigger {
+    display: block; background: var(--primary); color: var(--on-primary); 
+    padding: 14px; border-radius: 100px; font-size: 14px; text-align: center; 
+    font-weight: 700; cursor: pointer; border: none; width: 100%;
+  }
+
+  /* BOTTOM SHEET - DIPERBAIKI */
+  .bottom-sheet-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); display: none; z-index: 1000;
+  }
+  .bottom-sheet {
+    position: fixed; bottom: -100%; left: 0; width: 100%;
+    background: var(--surface); border-top-left-radius: 28px; border-top-right-radius: 28px;
+    padding: 24px; box-sizing: border-box; transition: bottom 0.3s ease; z-index: 1001;
+    border-top: 1px solid var(--surface-variant);
+  }
+  .bottom-sheet.active { bottom: 0; }
+  .sheet-title { font-weight: 600; font-size: 16px; margin-bottom: 24px; text-align: center; color: var(--primary); }
+  .sheet-buttons { display: flex; flex-direction: column; gap: 12px; }
+  .btn-target {
+    padding: 16px; border-radius: 16px; background: var(--primary-container);
+    font-size: 15px; font-weight: 600; text-align: center; cursor: pointer; color: white; text-decoration: none;
+  }
+  .btn-close { margin-top: 16px; padding: 12px; text-align: center; color: var(--primary); cursor: pointer; font-size: 14px; }
+
+  .loading { text-align: center; padding: 50px; color: var(--primary); }
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2 style="margin:0; font-size: 1.1rem;">OCS NFI Periodik Cleaning Monitor</h2>
+</header>
+
+<div class="container">
+  <div class="filter-container">
+    <div class="filter">
+      <div class="filter-row">
+        <div class="filter-group"><label>Tanggal</label><input type="date" id="filterTanggal"></div>
+        <div class="filter-group">
+          <label>Area</label>
+          <select id="filterArea"><option value="">Semua Area</option></select>
+        </div>
+      </div>
+      <div class="filter-group"><label>Pencarian Member</label><input type="text" id="searchMember" placeholder="Cari personil..."></div>
+    </div>
+  </div>
+  <div class="loading" id="loading">Memuat data...</div>
+  <div id="cards"></div>
+</div>
+
+<div class="bottom-sheet-overlay" id="sheetOverlay"></div>
+<div class="bottom-sheet" id="bottomSheet">
+  <div class="sheet-title">Hubungi Team Leader</div>
+  <div class="sheet-buttons">
+    <a href="#" id="btnPohara" class="btn-target" target="_blank">Pohara Ayub</a>
+    <a href="#" id="btnSadulloh" class="btn-target" target="_blank">Sadulloh</a>
+  </div>
+  <div class="btn-close" id="btnCloseSheet">Batal</div>
+</div>
+
+<script>
+const WA_POHARA = "6289637126728";
+const WA_SADULLOH = "6285281587927";
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSy72yhzMb2711VnnX-K1x6DG2-HNdlGRJfeORikr4x6ylI5ETjTaEjXzJ4KR0a632i65ZJpq667B-t/pub?output=csv";
+
+let allCards = [];
+
+function parseCSV(text) {
+  const lines = text.trim().split("\n");
+  return lines.slice(1).map(line => {
+    const parts = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+    const clean = parts.map(p => p.replace(/^"|"$/g, '').trim());
+    return {
+      tanggal: normalizeDate(clean[0]),
+      job: clean[1] || "",
+      area: clean[2] || "",
+      member: clean[3] || "",
+      durasi: clean[4] || "-",
+      ditugaskan: clean[5] || "-"
+    };
+  }).filter(i => i.job !== "");
+}
+
+function normalizeDate(str){
+  if(!str) return "";
+  const parts = str.split(/[-/]/);
+  if(parts.length === 3 && parts[0].length === 2) return `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+  return str;
+}
+
+// FUNGSI UNTUK MENAMPILKAN BOTTOM SHEET (DIPERBAIKI)
+function showSheet() {
+  document.getElementById('btnPohara').href = `https://wa.me/${WA_POHARA}`;
+  document.getElementById('btnSadulloh').href = `https://wa.me/${WA_SADULLOH}`;
+  document.getElementById('sheetOverlay').style.display = 'block';
+  setTimeout(() => document.getElementById('bottomSheet').classList.add('active'), 10);
+}
+
+function closeSheet() {
+  document.getElementById('bottomSheet').classList.remove('active');
+  setTimeout(() => document.getElementById('sheetOverlay').style.display = 'none', 300);
+}
+
+function renderCards() {
+  const container = document.getElementById("cards");
+  const fTanggal = document.getElementById("filterTanggal").value;
+  const fArea = document.getElementById("filterArea").value;
+  const fSearch = document.getElementById("searchMember").value.toLowerCase();
+  
+  const now = new Date();
+  const todayStr = now.toISOString().split('T')[0];
+  
+  const filteredData = allCards.filter(item => {
+    return (fTanggal ? item.tanggal === fTanggal : true) &&
+           (fArea ? item.area.toLowerCase() === fArea.toLowerCase() : true) &&
+           (fSearch ? item.member.toLowerCase().includes(fSearch) : true);
+  });
+
+  container.innerHTML = filteredData.length === 0 ? '<div class="empty-state">Data tidak ditemukan.</div>' : 
+    filteredData.map(item => {
+      const isToday = item.tanggal === todayStr;
+      return `
+      <div class="card ${isToday ? 'today' : ''}">
+        <div class="card-header">
+          <div class="job">${item.job}</div>
+          ${isToday ? '<span class="today-badge">HARI INI</span>' : '<span class="date-label">'+item.tanggal+'</span>'}
+        </div>
+        <div class="card-content">
+          <div class="info-row"><span class="label">Area</span><span class="value">${item.area}</span></div>
+          <div class="info-row"><span class="label">Member</span><span class="value">${item.member}</span></div>
+          <div class="info-row"><span class="label">Jam pengerjaan</span><span class="value">${item.durasi}</span></div>
+          <div class="info-row"><span class="label">Ditugaskan oleh</span><span class="value">${item.ditugaskan}</span></div>
+        </div>
+        <button class="btn-lapor-trigger" onclick="showSheet()">Hubungi Leader</button>
+      </div>`;
+    }).join('');
+}
+
+document.getElementById('sheetOverlay').addEventListener('click', closeSheet);
+document.getElementById('btnCloseSheet').addEventListener('click', closeSheet);
+
+fetch(CSV_URL).then(res => res.text()).then(csv => {
+  allCards = parseCSV(csv);
+  const uniqueAreas = [...new Set(allCards.map(i => i.area))].filter(a => a).sort();
+  uniqueAreas.forEach(a => {
+    const opt = document.createElement("option"); opt.value = a; opt.textContent = a;
+    document.getElementById("filterArea").appendChild(opt);
+  });
+  document.getElementById("filterTanggal").value = new Date().toISOString().split('T')[0];
+  document.getElementById("loading").style.display = "none";
+  renderCards();
+});
+
+document.getElementById("filterTanggal").addEventListener("change", renderCards);
+document.getElementById("filterArea").addEventListener("change", renderCards);
+document.getElementById("searchMember").addEventListener("input", renderCards);
+</script>
+
+</body>
+</html>
