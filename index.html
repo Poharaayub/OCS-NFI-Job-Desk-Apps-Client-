@@ -3,32 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Job Monitor - Minimalist</title>
+<title>Job Monitor - Card View</title>
 <!-- Lucide Icons -->
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
   :root {
-    /* Material 3 Dark Palette */
-    --md-sys-color-primary: #D0BCFF;
-    --md-sys-color-on-primary: #381E72;
-    --md-sys-color-primary-container: #4F378B;
-    --md-sys-color-on-primary-container: #EADDFF;
-    --md-sys-color-secondary-container: #332D41;
-    --md-sys-color-on-secondary-container: #E8DEF8;
-    --md-sys-color-surface: #1C1B1F;
-    --md-sys-color-surface-container: #2B2930;
-    --md-sys-color-surface-container-high: #333138;
-    --md-sys-color-on-surface: #E6E1E5;
-    --md-sys-color-on-surface-variant: #CAC4D0;
-    --md-sys-color-outline: #938F99;
-    --md-sys-color-outline-variant: #49454F;
+    /* Professional Navy & Sky Blue Palette */
+    --md-sys-color-primary: #38BDF8;
+    --md-sys-color-on-primary: #082F49;
+    --md-sys-color-primary-container: #0EA5E9;
+    --md-sys-color-on-primary-container: #F0F9FF;
+    --md-sys-color-secondary-container: #1E293B;
+    --md-sys-color-on-secondary-container: #E2E8F0;
+    
+    /* Backgrounds */
+    --md-sys-color-surface: #0F172A; /* Deep Navy */
+    --md-sys-color-surface-container: #1E293B;
+    --md-sys-color-surface-container-high: #334155;
+    
+    /* Text & Lines */
+    --md-sys-color-on-surface: #F8FAFC;
+    --md-sys-color-on-surface-variant: #94A3B8; /* Steel Slate */
+    --md-sys-color-outline: #475569;
+    --md-sys-color-outline-variant: #334155;
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   body { 
-    font-family: 'Google Sans', Roboto, Segoe UI, sans-serif; 
+    font-family: 'Inter', system-ui, -apple-system, sans-serif; 
     background-color: var(--md-sys-color-surface); 
     color: var(--md-sys-color-on-surface);
     margin: 0;
@@ -37,22 +41,22 @@
     min-height: 100vh;
   }
 
-  /* Filter Section */
+  /* Header & Filter */
   header {
-    padding: 16px;
+    padding: 20px 16px;
     background: var(--md-sys-color-surface);
     position: sticky;
     top: 0;
     z-index: 10;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
   }
 
   .filter-bar {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    background: var(--md-sys-color-surface-container);
-    padding: 16px;
-    border-radius: 24px;
+    max-width: 600px;
+    margin: 0 auto;
   }
 
   .filter-row {
@@ -61,148 +65,165 @@
   }
 
   .input-chip {
-    background: var(--md-sys-color-surface-container-high);
+    background: var(--md-sys-color-surface-container);
     border: 1px solid var(--md-sys-color-outline-variant);
     border-radius: 12px;
-    padding: 10px 14px;
+    padding: 12px 16px;
     color: var(--md-sys-color-on-surface);
     font-size: 14px;
     outline: none;
     flex: 1;
     min-width: 0;
+    transition: all 0.2s;
   }
 
   .input-chip:focus {
     border-color: var(--md-sys-color-primary);
+    background: var(--md-sys-color-surface-container-high);
   }
 
-  /* List Container */
+  /* Container */
   .tasks-container {
     flex: 1;
-    padding: 8px 16px 40px 16px;
+    padding: 16px;
     max-width: 600px;
     margin: 0 auto;
     width: 100%;
   }
 
-  /* Task Item */
-  .task-item {
-    display: flex;
-    flex-direction: column;
-    padding: 24px 0;
-    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  /* Card Item */
+  .task-card {
+    background: var(--md-sys-color-surface-container);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
   }
 
-  .task-header {
+  .task-card:active {
+    transform: scale(0.98);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 12px;
   }
 
-  .task-date-tag {
-    font-size: 12px;
+  .task-date-badge {
+    font-size: 11px;
+    background: rgba(56, 189, 248, 0.15);
     color: var(--md-sys-color-primary);
+    padding: 4px 10px;
+    border-radius: 20px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    display: block;
-    margin-bottom: 4px;
   }
 
   .task-title {
     font-size: 18px;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--md-sys-color-on-surface);
-    line-height: 1.3;
-  }
-
-  .task-details {
-    font-size: 13px;
-    color: var(--md-sys-color-on-surface-variant);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
+    line-height: 1.4;
     margin-bottom: 16px;
   }
 
-  .detail-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--md-sys-color-secondary-container);
-    color: var(--md-sys-color-on-secondary-container);
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 12px;
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
   }
 
-  .task-footer {
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--md-sys-color-on-surface-variant);
+  }
+
+  .info-item i {
+    color: var(--md-sys-color-primary);
+  }
+
+  .card-divider {
+    height: 1px;
+    background: var(--md-sys-color-outline-variant);
+    margin: 0 -20px 16px -20px;
+  }
+
+  .card-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  .task-pic-info {
-    font-size: 12px;
+  .pic-label {
+    font-size: 11px;
     color: var(--md-sys-color-on-surface-variant);
+    margin-bottom: 2px;
   }
 
-  /* Inline Card Action Button */
-  .btn-contact-card {
+  .pic-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--md-sys-color-on-surface);
+  }
+
+  .btn-contact {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background-color: var(--md-sys-color-primary-container);
-    color: var(--md-sys-color-on-primary-container);
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
     padding: 10px 16px;
     border-radius: 12px;
     border: none;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.2s;
   }
 
-  .btn-contact-card:active {
-    background-color: var(--md-sys-color-primary);
-    color: var(--md-sys-color-on-primary);
-  }
-
-  /* Bottom Sheet */
+  /* Sheets & Overlay */
   .overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7); display: none; z-index: 100;
-    backdrop-filter: blur(2px);
+    background: rgba(0,0,0,0.85); display: none; z-index: 100;
+    backdrop-filter: blur(4px);
   }
   .sheet {
     position: fixed; bottom: -100%; left: 0; width: 100%;
     background: var(--md-sys-color-surface-container-high);
     border-top-left-radius: 28px; border-top-right-radius: 28px;
-    padding: 24px 24px 40px 24px; z-index: 101;
-    transition: bottom 0.3s cubic-bezier(0, 0, 0.2, 1);
+    padding: 24px 24px 48px 24px; z-index: 101;
+    transition: bottom 0.4s cubic-bezier(0, 0, 0.2, 1);
   }
   .sheet.active { bottom: 0; }
   .sheet-handle {
-    width: 32px; height: 4px; background: var(--md-sys-color-outline-variant);
+    width: 40px; height: 4px; background: var(--md-sys-color-outline);
     border-radius: 2px; margin: -12px auto 24px auto;
   }
-  .sheet-title { font-size: 18px; margin-bottom: 24px; text-align: center; font-weight: 500; }
+  .sheet-title { font-size: 18px; margin-bottom: 24px; text-align: center; font-weight: 600; }
   
   .sheet-btn {
     display: flex; align-items: center; justify-content: center; gap: 12px;
-    width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 20px;
+    width: 100%; padding: 18px; margin-bottom: 12px; border-radius: 16px;
     border: none; background: var(--md-sys-color-primary-container);
-    color: var(--md-sys-color-on-primary-container);
-    font-weight: 600; cursor: pointer; text-decoration: none;
+    color: white; font-weight: 600; cursor: pointer; text-decoration: none;
     font-size: 16px;
   }
 
   .btn-close {
-    text-align: center; padding: 16px; color: var(--md-sys-color-primary);
-    font-size: 14px; cursor: pointer; margin-top: 8px;
+    text-align: center; padding: 16px; color: var(--md-sys-color-on-surface-variant);
+    font-size: 14px; cursor: pointer;
   }
 
   .loading { text-align: center; padding: 40px; color: var(--md-sys-color-primary); }
-  .empty { text-align: center; padding: 40px; color: var(--md-sys-color-on-surface-variant); font-size: 14px; }
+  .empty { text-align: center; padding: 60px 20px; color: var(--md-sys-color-on-surface-variant); }
 </style>
 </head>
 <body>
@@ -220,22 +241,21 @@
 </header>
 
 <main class="tasks-container">
-  <div id="loading" class="loading">Memperbarui data...</div>
+  <div id="loading" class="loading">Memuat data...</div>
   <div id="taskList"></div>
 </main>
 
-<!-- Bottom Sheet -->
 <div class="overlay" id="overlay"></div>
 <div class="sheet" id="sheet">
   <div class="sheet-handle"></div>
   <div class="sheet-title">Hubungi Team Leader</div>
   <a href="#" id="waPohara" class="sheet-btn" target="_blank">
-    <i data-lucide="message-circle" size="22"></i> Pohara Ayub
+    <i data-lucide="message-circle"></i> Pohara Ayub
   </a>
   <a href="#" id="waSadulloh" class="sheet-btn" target="_blank">
-    <i data-lucide="message-circle" size="22"></i> Sadulloh
+    <i data-lucide="message-circle"></i> Sadulloh
   </a>
-  <div class="btn-close" id="closeSheet">Tutup</div>
+  <div class="btn-close" id="closeSheet">Batal</div>
 </div>
 
 <script>
@@ -298,35 +318,48 @@ function render() {
   });
 
   if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty">Tidak ada jadwal ditemukan.</div>';
+    container.innerHTML = '<div class="empty">Tidak ada jadwal yang sesuai filter.</div>';
     return;
   }
 
   container.innerHTML = filtered.map(item => {
     const isToday = item.tanggal === today;
     const d = new Date(item.tanggal);
-    const dateFmt = isNaN(d) ? item.tanggal : d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    const dateFmt = isNaN(d) ? item.tanggal : d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 
     return `
-      <div class="task-item">
-        <div class="task-header">
-          <span class="task-date-tag">${isToday ? 'Hari ini' : dateFmt}</span>
-          <div class="task-title">${item.job}</div>
+      <div class="task-card">
+        <div class="card-header">
+          <span class="task-date-badge">${isToday ? 'Hari Ini' : dateFmt}</span>
         </div>
         
-        <div class="task-details">
-          <span class="detail-chip"><i data-lucide="map-pin" size="13"></i> ${item.area}</span>
-          <span class="detail-chip"><i data-lucide="user" size="13"></i> ${item.member}</span>
-          <span class="detail-chip"><i data-lucide="clock" size="13"></i> ${item.durasi}</span>
+        <div class="task-title">${item.job}</div>
+        
+        <div class="info-grid">
+          <div class="info-item">
+            <i data-lucide="map-pin" size="14"></i>
+            <span>${item.area}</span>
+          </div>
+          <div class="info-item">
+            <i data-lucide="users" size="14"></i>
+            <span>${item.member}</span>
+          </div>
+          <div class="info-item">
+            <i data-lucide="clock" size="14"></i>
+            <span>${item.durasi}</span>
+          </div>
         </div>
 
-        <div class="task-footer">
-          <div class="task-pic-info">
-            Ditugaskan Oleh: <strong>${item.pic}</strong>
+        <div class="card-divider"></div>
+
+        <div class="card-footer">
+          <div>
+            <div class="pic-label">Team Leader</div>
+            <div class="pic-name">${item.pic}</div>
           </div>
-          <button class="btn-contact-card" onclick="openSheet()">
-            <i data-lucide="message-circle" size="16"></i>
-            <span>Hubungi TL</span>
+          <button class="btn-contact" onclick="openSheet()">
+            <i data-lucide="phone" size="14"></i>
+            Hubungi TL
           </button>
         </div>
       </div>
@@ -353,8 +386,6 @@ document.getElementById("filterArea").addEventListener("change", render);
 document.getElementById("searchMember").addEventListener("input", render);
 document.getElementById("overlay").addEventListener("click", closeSheet);
 document.getElementById("closeSheet").addEventListener("click", closeSheet);
-
-lucide.createIcons();
 </script>
 
 </body>
