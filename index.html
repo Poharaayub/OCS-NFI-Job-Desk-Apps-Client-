@@ -3,58 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Job Monitor - Soft Professional</title>
+<title>Job Monitor - Tasks Style</title>
 <!-- Lucide Icons -->
 <script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
   :root {
-    /* Palet Navy & Slate yang Lembut */
-    --md-sys-color-primary: #1E3A8A; /* Navy Blue */
-    --md-sys-color-on-primary: #FFFFFF;
-    --md-sys-color-primary-container: #E0E7FF;
-    --md-sys-color-on-primary-container: #1E3A8A;
-    
-    /* Latar Belakang - Off-White (Mengurangi Eye-Strain) */
-    --md-sys-color-surface: #F1F5F9; 
-    --md-sys-color-surface-container: #FFFFFF; /* Putih Bersih untuk Kartu */
-    
-    /* Teks & Garis Kontras Tinggi */
-    --md-sys-color-on-surface: #0F172A; /* Slate Gelap */
-    --md-sys-color-on-surface-variant: #475569; /* Slate Gray */
-    --md-sys-color-outline: #E2E8F0; /* Garis Tepi Sangat Tipis */
+    --google-blue: #1a73e8;
+    --google-gray: #5f6368;
+    --google-bg: #ffffff;
+    --google-border: #dadce0;
+    --surface-variant: #f8f9fa;
   }
 
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  * { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; 
+  }
 
   body { 
-    font-family: 'Inter', system-ui, -apple-system, sans-serif; 
-    background-color: var(--md-sys-color-surface); 
-    color: var(--md-sys-color-on-surface);
+    font-family: 'Roboto', sans-serif; 
+    background-color: var(--google-bg); 
+    color: #202124;
     margin: 0;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
   }
 
-  /* Header & Filter - Frosted Glass Effect */
+  /* Header Minimalis Google Tasks */
   header {
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    padding: 16px 20px;
+    background: #fff;
     position: sticky;
     top: 0;
     z-index: 10;
-    border-bottom: 1px solid var(--md-sys-color-outline);
+    border-bottom: 1px solid var(--google-border);
   }
 
   .filter-bar {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    max-width: 600px;
-    margin: 0 auto;
+    gap: 12px;
   }
 
   .filter-row {
@@ -62,176 +53,162 @@
     gap: 8px;
   }
 
-  .input-chip {
-    background: #FFFFFF;
-    border: 1px solid var(--md-sys-color-outline);
-    border-radius: 10px;
-    padding: 10px 14px;
-    color: var(--md-sys-color-on-surface);
+  .input-field {
+    background: var(--surface-variant);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #3c4043;
     font-size: 14px;
     outline: none;
     flex: 1;
-    min-width: 0;
-    transition: all 0.2s ease;
+    transition: all 0.2s;
   }
 
-  .input-chip:focus {
-    border-color: var(--md-sys-color-primary);
-    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.08);
+  .input-field:focus {
+    background: #fff;
+    border-color: var(--google-blue);
+    box-shadow: 0 1px 2px rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
   }
 
   /* Container */
   .tasks-container {
     flex: 1;
-    padding: 16px;
-    max-width: 600px;
+    padding: 8px 0;
+    max-width: 800px;
     margin: 0 auto;
     width: 100%;
   }
 
-  /* Card Item - Putih Bersih dengan Shadow Halus */
-  .task-card {
-    background: var(--md-sys-color-surface-container);
-    border: 1px solid var(--md-sys-color-outline);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 16px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-    transition: transform 0.2s, box-shadow 0.2s;
+  /* List Item Style */
+  .task-item {
+    display: flex;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f1f3f4;
+    transition: background 0.2s;
+    cursor: pointer;
+    align-items: flex-start;
   }
 
-  .task-card:active {
-    transform: scale(0.99);
+  .task-item:hover {
+    background-color: #f8f9fa;
   }
 
-  .card-header {
+  /* Lingkaran ala Checkbox Google Tasks */
+  .task-check-circle {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--google-border);
+    border-radius: 50%;
+    margin-right: 16px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: transparent;
+    transition: all 0.2s;
+  }
+
+  .task-item:hover .task-check-circle {
+    border-color: var(--google-blue);
+    color: var(--google-blue);
+  }
+
+  .task-content {
+    flex: 1;
+  }
+
+  .task-main-row {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 10px;
-  }
-
-  .task-date-badge {
-    font-size: 10px;
-    background: var(--md-sys-color-primary-container);
-    color: var(--md-sys-color-primary);
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
   }
 
   .task-title {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--md-sys-color-on-surface);
-    line-height: 1.5;
-    margin-bottom: 16px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #202124;
+    margin: 0 0 4px 0;
+    line-height: 1.4;
   }
 
-  .info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+  .task-details {
+    display: flex;
+    flex-wrap: wrap;
     gap: 12px;
-    margin-bottom: 18px;
+    margin-top: 4px;
   }
 
-  .info-item {
+  .detail-chip {
+    font-size: 12px;
+    color: var(--google-gray);
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    color: var(--md-sys-color-on-surface-variant);
+    gap: 4px;
   }
 
-  .info-item i {
-    color: var(--md-sys-color-on-surface-variant);
-    opacity: 0.7;
-  }
-
-  .card-divider {
-    height: 1px;
-    background: var(--md-sys-color-outline);
-    margin: 0 -20px 16px -20px;
-  }
-
-  .card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .pic-label {
-    font-size: 10px;
-    color: var(--md-sys-color-on-surface-variant);
-    margin-bottom: 2px;
-    text-transform: uppercase;
+  .date-tag {
+    color: var(--google-blue);
     font-weight: 500;
   }
 
-  .pic-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--md-sys-color-on-surface);
+  .pic-info {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--google-gray);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
-  .btn-contact {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background-color: var(--md-sys-color-primary);
-    color: var(--md-sys-color-on-primary);
-    padding: 10px 16px;
-    border-radius: 10px;
-    border: none;
-    font-size: 13px;
-    font-weight: 600;
+  .btn-action {
+    background: none;
+    border: 1px solid var(--google-border);
+    color: var(--google-blue);
+    padding: 6px 12px;
+    border-radius: 18px;
+    font-size: 12px;
+    font-weight: 500;
     cursor: pointer;
-    box-shadow: 0 4px 6px rgba(30, 58, 138, 0.15);
+    transition: background 0.2s;
+  }
+
+  .btn-action:hover {
+    background: #f1f8ff;
   }
 
   /* Sheets & Overlay */
   .overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(15, 23, 42, 0.3); display: none; z-index: 100;
-    backdrop-filter: blur(4px);
+    background: rgba(32, 33, 36, 0.6); display: none; z-index: 100;
   }
   .sheet {
     position: fixed; bottom: -100%; left: 0; width: 100%;
     background: #FFFFFF;
-    border-top-left-radius: 24px; border-top-right-radius: 24px;
-    padding: 24px 24px 48px 24px; z-index: 101;
-    transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 -10px 30px rgba(0,0,0,0.08);
+    border-top-left-radius: 16px; border-top-right-radius: 16px;
+    padding: 20px 20px 40px 20px; z-index: 101;
+    transition: bottom 0.3s ease;
   }
   .sheet.active { bottom: 0; }
   .sheet-handle {
-    width: 36px; height: 4px; background: #E2E8F0;
-    border-radius: 2px; margin: -12px auto 20px auto;
+    width: 32px; height: 4px; background: #dadce0;
+    border-radius: 2px; margin: 0 auto 20px auto;
   }
-  .sheet-title { font-size: 18px; margin-bottom: 24px; text-align: center; font-weight: 700; }
+  .sheet-title { font-size: 16px; margin-bottom: 20px; color: var(--google-gray); font-weight: 500; }
   
   .sheet-btn {
-    display: flex; align-items: center; justify-content: center; gap: 12px;
-    width: 100%; padding: 16px; margin-bottom: 12px; border-radius: 12px;
-    border: 1px solid var(--md-sys-color-outline); background: #FFFFFF;
-    color: var(--md-sys-color-on-surface); font-weight: 600; cursor: pointer; text-decoration: none;
-    font-size: 16px; transition: all 0.2s;
+    display: flex; align-items: center; gap: 16px;
+    width: 100%; padding: 14px; margin-bottom: 8px; border-radius: 8px;
+    border: none; background: transparent;
+    color: #202124; font-weight: 400; cursor: pointer; text-decoration: none;
+    font-size: 15px;
   }
 
-  .sheet-btn:active {
-    background: var(--md-sys-color-primary-container);
-    border-color: var(--md-sys-color-primary);
-  }
+  .sheet-btn:hover { background: #f1f3f4; }
 
-  .btn-close {
-    text-align: center; padding: 12px; color: var(--md-sys-color-on-surface-variant);
-    font-size: 14px; cursor: pointer;
-  }
-
-  .loading { text-align: center; padding: 40px; color: var(--md-sys-color-primary); }
-  .empty { text-align: center; padding: 60px 20px; color: var(--md-sys-color-on-surface-variant); }
+  .loading { text-align: center; padding: 40px; color: var(--google-blue); }
+  .empty { text-align: center; padding: 60px 20px; color: var(--google-gray); font-size: 14px; }
 </style>
 </head>
 <body>
@@ -239,31 +216,34 @@
 <header>
   <div class="filter-bar">
     <div class="filter-row">
-      <input type="date" id="filterTanggal" class="input-chip">
-      <select id="filterArea" class="input-chip">
+      <input type="date" id="filterTanggal" class="input-field">
+      <select id="filterArea" class="input-field">
         <option value="">Semua Area</option>
       </select>
     </div>
-    <input type="text" id="searchMember" class="input-chip" placeholder="Cari nama member...">
+    <input type="text" id="searchMember" class="input-field" placeholder="Cari nama member...">
   </div>
 </header>
 
 <main class="tasks-container">
-  <div id="loading" class="loading">Memuat data...</div>
+  <div id="loading" class="loading">Memuat tugas...</div>
   <div id="taskList"></div>
 </main>
 
+<!-- Bottom Sheet (Contact TL) -->
 <div class="overlay" id="overlay"></div>
 <div class="sheet" id="sheet">
   <div class="sheet-handle"></div>
   <div class="sheet-title">Hubungi Team Leader</div>
   <a href="#" id="waPohara" class="sheet-btn" target="_blank">
-    <i data-lucide="message-circle"></i> Pohara Ayub
+    <i data-lucide="message-square" size="20"></i> Pohara Ayub
   </a>
   <a href="#" id="waSadulloh" class="sheet-btn" target="_blank">
-    <i data-lucide="message-circle"></i> Sadulloh
+    <i data-lucide="message-square" size="20"></i> Sadulloh
   </a>
-  <div class="btn-close" id="closeSheet">Batal</div>
+  <button class="sheet-btn" id="closeSheet" style="margin-top: 8px; color: var(--google-gray)">
+    Batal
+  </button>
 </div>
 
 <script>
@@ -326,49 +306,46 @@ function render() {
   });
 
   if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty">Tidak ada jadwal yang sesuai filter.</div>';
+    container.innerHTML = '<div class="empty">Tidak ada tugas yang ditemukan.</div>';
     return;
   }
 
   container.innerHTML = filtered.map(item => {
     const isToday = item.tanggal === today;
     const d = new Date(item.tanggal);
-    const dateFmt = isNaN(d) ? item.tanggal : d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+    const dateFmt = isNaN(d) ? item.tanggal : d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
 
     return `
-      <div class="task-card">
-        <div class="card-header">
-          <span class="task-date-badge">${isToday ? 'Hari Ini' : dateFmt}</span>
+      <div class="task-item" onclick="openSheet()">
+        <div class="task-check-circle">
+          <i data-lucide="check" size="14"></i>
         </div>
-        
-        <div class="task-title">${item.job}</div>
-        
-        <div class="info-grid">
-          <div class="info-item">
-            <i data-lucide="map-pin" size="14"></i>
-            <span>${item.area}</span>
+        <div class="task-content">
+          <div class="task-main-row">
+            <h3 class="task-title">${item.job}</h3>
           </div>
-          <div class="info-item">
-            <i data-lucide="users" size="14"></i>
-            <span>${item.member}</span>
+          <div class="task-details">
+            <span class="detail-chip date-tag">
+              <i data-lucide="calendar" size="12"></i>
+              ${isToday ? 'Hari ini' : dateFmt}
+            </span>
+            <span class="detail-chip">
+              <i data-lucide="map-pin" size="12"></i>
+              ${item.area}
+            </span>
+            <span class="detail-chip">
+              <i data-lucide="user" size="12"></i>
+              ${item.member}
+            </span>
+            <span class="detail-chip">
+              <i data-lucide="clock" size="12"></i>
+              ${item.durasi}
+            </span>
           </div>
-          <div class="info-item">
-            <i data-lucide="clock" size="14"></i>
-            <span>${item.durasi}</span>
+          <div class="pic-info">
+            <span>TL: ${item.pic}</span>
+            <button class="btn-action">Detail</button>
           </div>
-        </div>
-
-        <div class="card-divider"></div>
-
-        <div class="card-footer">
-          <div>
-            <div class="pic-label">Team Leader</div>
-            <div class="pic-name">${item.pic}</div>
-          </div>
-          <button class="btn-contact" onclick="openSheet()">
-            <i data-lucide="phone" size="14"></i>
-            Hubungi TL
-          </button>
         </div>
       </div>
     `;
