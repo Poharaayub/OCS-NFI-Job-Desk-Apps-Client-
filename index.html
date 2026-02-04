@@ -17,29 +17,20 @@
     --google-text-sub: #5f6368;
     --google-divider: #dadce0;
     --google-surface: #f8f9fa;
-    
-    /* Status Colors */
     --status-done: #1e8e3e;
-    --status-process: #1a73e8;
-    --status-pending: #f9ab00;
-    
-    /* Status BG Light */
     --status-done-bg: #e6f4ea;
-    --status-process-bg: #e8f0fe;
-    --status-pending-bg: #fef7e0;
+    --status-pending-bg: #f1f3f4;
   }
 
-  * { 
-    box-sizing: border-box; 
-    -webkit-tap-highlight-color: transparent; 
-  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   body { 
     font-family: 'Inter', sans-serif; 
     background-color: var(--google-gray-bg); 
     color: var(--google-text-main);
     margin: 0;
-    padding-bottom: 30px;
+    padding-bottom: 20px;
+    font-size: 14px;
   }
 
   .controls-wrapper {
@@ -47,27 +38,21 @@
     top: 0;
     background: #fff;
     z-index: 10;
-    padding: 16px 16px 12px 16px;
+    padding: 12px 16px;
     border-bottom: 1px solid var(--google-divider);
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
   }
 
   .search-container {
     background: var(--google-surface);
-    border-radius: 24px;
-    padding: 6px 16px;
+    border-radius: 8px;
+    padding: 4px 12px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    border: 1px solid transparent;
-    transition: all 0.2s;
-  }
-
-  .search-container:focus-within {
-    background: #fff;
-    box-shadow: 0 1px 6px rgba(32,33,36,0.28);
+    gap: 10px;
+    border: 1px solid var(--google-divider);
   }
 
   .search-container input {
@@ -75,8 +60,8 @@
     border: none;
     outline: none;
     flex: 1;
-    font-size: 15px;
-    padding: 8px 0;
+    font-size: 14px;
+    padding: 6px 0;
     color: var(--google-text-main);
   }
 
@@ -91,15 +76,10 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 12px;
+    padding: 4px 10px;
     border: 1px solid var(--google-divider);
-    border-radius: 20px;
+    border-radius: 6px;
     background: #fff;
-  }
-
-  .filter-item i {
-    color: var(--google-text-sub);
-    flex-shrink: 0;
   }
 
   .filter-item select, 
@@ -107,246 +87,189 @@
     border: none;
     outline: none;
     background: transparent;
-    font-family: inherit;
-    font-size: 13px;
-    color: var(--google-text-main);
+    font-size: 12px;
     width: 100%;
     cursor: pointer;
   }
 
   .tasks-container {
-    max-width: 800px;
+    max-width: 700px;
     margin: 0 auto;
   }
 
   .task-item {
     display: flex;
-    padding: 16px;
-    gap: 16px;
+    padding: 12px 16px;
+    gap: 12px;
     border-bottom: 1px solid #f1f3f4;
     transition: background 0.2s;
   }
   
   .status-indicator {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    border: 2px solid var(--google-divider);
+    border: 2px solid #5f6368;
+    background: #ffffff;
     flex-shrink: 0;
-    margin-top: 2px;
+    margin-top: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s;
   }
 
+  .status-indicator.proses, .status-indicator.menunggu { border-color: #202124; }
   .status-indicator.selesai { 
     border-color: var(--status-done); 
-    background: var(--status-done); 
-    color: white; 
-  }
-  .status-indicator.proses { border-color: var(--status-process); }
-  .status-indicator.menunggu { border-color: var(--status-pending); }
-
-  .task-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+    background: var(--status-done);
+    color: #ffffff; 
   }
 
-  .header-line {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 8px;
+  .task-content { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .header-line { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  
+  .task-title { 
+    font-size: 14px; 
+    font-weight: 500; 
+    margin: 0; 
+    line-height: 1.4; 
+    color: var(--google-text-main); 
+    transition: all 0.2s; 
   }
 
-  .task-title {
-    font-size: 16px;
-    font-weight: 400;
-    margin: 0;
-    line-height: 1.4;
-    flex: 1;
-    color: var(--google-text-main);
+  /* Efek Pekerjaan Selesai (Strikethrough) */
+  .task-item.is-done .task-title { 
+    text-decoration: line-through; 
+    color: var(--google-text-sub); 
+    opacity: 0.6; 
+  }
+  
+  .task-item.is-done .task-details {
+    opacity: 0.5;
   }
 
   .status-badge {
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 600;
-    padding: 2px 10px;
-    border-radius: 12px;
-    white-space: nowrap;
+    padding: 1px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
   }
 
   .status-badge.selesai { background: var(--status-done-bg); color: var(--status-done); }
-  .status-badge.proses { background: var(--status-process-bg); color: var(--status-process); }
-  .status-badge.menunggu { background: var(--status-pending-bg); color: var(--status-pending); }
-
-  .task-item.is-done .task-title {
-    text-decoration: line-through;
-    color: var(--google-text-sub);
-  }
+  .status-badge.proses, .status-badge.menunggu { background: var(--status-pending-bg); color: var(--google-text-main); }
 
   .task-details {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--google-text-sub);
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    column-gap: 12px;
+    row-gap: 4px;
     margin-top: 2px;
+    transition: all 0.2s;
   }
 
-  .detail-chip {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .date-badge {
-    color: var(--google-blue);
-    font-weight: 500;
-  }
+  .detail-chip { display: flex; align-items: center; gap: 4px; }
+  .date-badge { color: var(--google-blue); font-weight: 600; }
 
   .btn-action {
     background: #fff;
     border: 1px solid var(--google-divider);
-    border-radius: 8px;
+    border-radius: 6px;
     color: var(--google-blue);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 8px 16px;
+    font-size: 12px;
+    padding: 6px 12px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-top: 10px;
+    gap: 6px;
+    margin-top: 8px;
     align-self: flex-start;
   }
 
-  /* Overlay & Sheets */
-  .overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(32, 33, 36, 0.6); display: none; z-index: 100;
-  }
+  .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(32, 33, 36, 0.6); display: none; z-index: 100; }
   .sheet {
     position: fixed; bottom: -100%; left: 0; width: 100%;
-    background: #fff; border-top-left-radius: 28px; border-top-right-radius: 28px;
-    z-index: 101; transition: bottom 0.3s cubic-bezier(0, 0, 0.2, 1);
+    background: #fff; border-top-left-radius: 20px; border-top-right-radius: 20px;
+    z-index: 101; transition: bottom 0.25s ease-out;
   }
   .sheet.active { bottom: 0; }
-  .sheet-webview { height: 92vh; display: flex; flex-direction: column; }
-  .webview-container { flex: 1; width: 100%; border: none; background: #fff; }
-  .sheet-header-handle { height: 4px; width: 32px; background: #dadce0; border-radius: 2px; margin: 12px auto; }
+  .sheet-webview { height: 90vh; display: flex; flex-direction: column; }
+  .webview-container { flex: 1; border: none; }
+  .sheet-header-handle { height: 4px; width: 32px; background: #dadce0; border-radius: 2px; margin: 10px auto; }
+  .sheet-header-content { display: flex; align-items: center; gap: 8px; padding: 0 12px 10px; border-bottom: 1px solid var(--google-divider); }
+  .sheet-title { font-weight: 500; font-size: 15px; margin: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   
-  .sheet-header-content {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0 12px 12px 12px;
-    border-bottom: 1px solid var(--google-divider);
-  }
-  
-  .sheet-title-wrapper {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    overflow: hidden;
-  }
+  .btn-header-icon { background: transparent; border: none; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: var(--google-text-sub); cursor: pointer; }
 
-  .sheet-title { 
-    font-weight: 500; 
-    font-size: 16px; 
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .btn-header-icon {
-    background: transparent;
-    border: none;
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--google-text-sub);
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  .btn-header-icon.primary {
-    color: var(--google-blue);
-  }
-
-  .loader { display: flex; justify-content: center; padding: 60px; }
-  .spinner { width: 28px; height: 28px; border: 3px solid #f3f3f3; border-top: 3px solid var(--google-blue); border-radius: 50%; animation: spin 1s linear infinite; }
+  .loader { display: flex; justify-content: center; padding: 40px; }
+  .spinner { width: 24px; height: 24px; border: 3px solid #f3f3f3; border-top: 3px solid var(--google-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-  .empty { text-align: center; padding: 80px 20px; color: var(--google-text-sub); font-size: 14px; }
+  .empty { text-align: center; padding: 60px 20px; color: var(--google-text-sub); }
 </style>
 </head>
 <body>
 
 <div class="controls-wrapper">
   <div class="search-container">
-    <i data-lucide="search" size="20" style="color: #5f6368"></i>
-    <input type="text" id="searchMember" placeholder="Cari nama member atau tugas...">
+    <i data-lucide="search" size="16" style="color: #5f6368"></i>
+    <input type="text" id="searchMember" placeholder="Cari tugas, member, atau PIC...">
   </div>
 
   <div class="filter-row">
     <div class="filter-item">
-      <i data-lucide="map-pin" size="16"></i>
-      <select id="filterArea">
-        <option value="">Semua Area</option>
-      </select>
+      <i data-lucide="map-pin" size="14"></i>
+      <select id="filterArea"><option value="">Semua Area</option></select>
     </div>
     <div class="filter-item">
-      <i data-lucide="calendar" size="16"></i>
+      <i data-lucide="calendar" size="14"></i>
       <input type="date" id="filterTanggal">
     </div>
   </div>
 </div>
 
 <main class="tasks-container">
-  <div id="loading" class="loader">
-    <div class="spinner"></div>
-  </div>
+  <div id="loading" class="loader"><div class="spinner"></div></div>
   <div id="taskList"></div>
 </main>
 
 <div class="overlay" id="overlay"></div>
-
 <div class="sheet sheet-webview" id="docSheet">
   <div class="sheet-header-handle"></div>
   <div class="sheet-header-content">
-    <div class="sheet-title-wrapper">
-      <button class="btn-header-icon" onclick="closeAllSheets()" title="Kembali">
-        <i data-lucide="arrow-left" size="24"></i>
-      </button>
-      <h4 class="sheet-title" id="docSheetTitle">Dokumentasi</h4>
-    </div>
-    <a href="#" id="externalLinkBtn" target="_blank" class="btn-header-icon primary" title="Buka di tab baru">
-      <i data-lucide="external-link" size="22"></i>
-    </a>
+    <button class="btn-header-icon" onclick="closeAllSheets()"><i data-lucide="arrow-left" size="20"></i></button>
+    <h4 class="sheet-title" id="docSheetTitle">Dokumentasi</h4>
+    <a href="#" id="externalLinkBtn" target="_blank" class="btn-header-icon" style="color: var(--google-blue)"><i data-lucide="external-link" size="20"></i></a>
   </div>
-  <iframe id="docWebview" class="webview-container" src="about:blank"></iframe>
+  <iframe id="docWebview" class="webview-container"></iframe>
 </div>
 
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSy72yhzMb2711VnnX-K1x6DG2-HNdlGRJfeORikr4x6ylI5ETjTaEjXzJ4KR0a632i65ZJpq667B-t/pub?output=csv";
-
 let allData = [];
 
+// Helper untuk mendapatkan tanggal hari ini format YYYY-MM-DD
 function getTodayStr() {
-  return new Date().toISOString().split('T')[0];
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
+
+const todayStr = getTodayStr();
+document.getElementById("filterTanggal").value = todayStr;
 
 function normalizeDate(str) {
   if(!str) return "";
   const parts = str.split(/[-/]/);
-  if(parts.length === 3 && parts[0].length === 2) return `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+  if(parts.length === 3) {
+    if(parts[0].length <= 2 && parts[2].length === 4) {
+      return `${parts[2]}-${String(parts[1]).padStart(2,'0')}-${String(parts[0]).padStart(2,'0')}`;
+    }
+    if(parts[0].length === 4) {
+      return `${parts[0]}-${String(parts[1]).padStart(2,'0')}-${String(parts[2]).padStart(2,'0')}`;
+    }
+  }
   return str;
 }
 
@@ -354,164 +277,136 @@ function parseCSV(text) {
   const lines = text.trim().split(/\r?\n/);
   return lines.slice(1).map(line => {
     const columns = [];
-    let current = "";
-    let inQuotes = false;
-    
+    let current = "", inQuotes = false;
     for (let i = 0; i < line.length; i++) {
       const char = line[i];
-      if (char === '"' && line[i+1] === '"') {
-        current += '"'; i++;
-      } else if (char === '"') {
-        inQuotes = !inQuotes;
-      } else if (char === ',' && !inQuotes) {
-        columns.push(current.trim());
-        current = "";
-      } else {
-        current += char;
-      }
+      if (char === '"' && line[i+1] === '"') { current += '"'; i++; }
+      else if (char === '"') inQuotes = !inQuotes;
+      else if (char === ',' && !inQuotes) { columns.push(current.trim()); current = ""; }
+      else current += char;
     }
     columns.push(current.trim());
-
     return {
       tanggal: normalizeDate(columns[0]),
       job: columns[1] || "Tanpa Judul",
       area: columns[2] || "-",
       member: columns[3] || "-",
-      jam: columns[4] || "-", // Menampilkan Kolom Durasi/Jam
+      jam: columns[4] || "-",
       pic: columns[5] || "-",
       status: columns[6] || "Menunggu",
       docLink: (columns[7] || "").trim().replace(/\s/g, '')
     };
-  }).filter(i => i.job !== "Tanpa Judul" && i.tanggal !== "");
+  }).filter(i => i.tanggal !== "");
 }
-
-function getStatusStyle(status) {
-  const s = status.toLowerCase();
-  if (s.includes('selesai') || s.includes('done')) return 'selesai';
-  if (s.includes('proses') || s.includes('jalan')) return 'proses';
-  return 'menunggu';
-}
-
-function openDocSheet(link, title) {
-  if(!link || link === "-" || link === "") return;
-  let finalLink = link;
-  if (link.includes('drive.google.com') && link.includes('/view')) {
-      finalLink = link.replace('/view', '/preview');
-  }
-  document.getElementById('docSheetTitle').innerText = title;
-  document.getElementById('docWebview').src = finalLink;
-  document.getElementById('externalLinkBtn').href = link;
-  document.getElementById('overlay').style.display = 'block';
-  setTimeout(() => document.getElementById('docSheet').classList.add('active'), 10);
-  window.history.pushState({ sheet: 'doc' }, "");
-}
-
-function closeAllSheets() {
-  const sheet = document.getElementById('docSheet');
-  if (sheet.classList.contains('active')) {
-    sheet.classList.remove('active');
-    setTimeout(() => {
-      document.getElementById('overlay').style.display = 'none';
-      document.getElementById('docWebview').src = 'about:blank';
-    }, 300);
-  }
-}
-
-window.addEventListener('popstate', closeAllSheets);
 
 function render() {
   const container = document.getElementById("taskList");
   const fDate = document.getElementById("filterTanggal").value;
   const fArea = document.getElementById("filterArea").value;
   const fSearch = document.getElementById("searchMember").value.toLowerCase();
-  const today = getTodayStr();
+  
+  const filtered = allData.filter(d => 
+    (fDate ? d.tanggal === fDate : true) &&
+    (fArea ? d.area === fArea : true) &&
+    (fSearch ? (d.member.toLowerCase().includes(fSearch) || d.job.toLowerCase().includes(fSearch) || d.pic.toLowerCase().includes(fSearch)) : true)
+  );
 
-  const filtered = allData.filter(d => {
-    return (fDate ? d.tanggal === fDate : true) &&
-           (fArea ? d.area === fArea : true) &&
-           (fSearch ? (d.member.toLowerCase().includes(fSearch) || d.job.toLowerCase().includes(fSearch)) : true);
-  });
-
-  if (filtered.length === 0) {
-    container.innerHTML = `<div class="empty">Tidak ada pekerjaan ditemukan.</div>`;
+  if (!filtered.length) {
+    container.innerHTML = `<div class="empty">Tidak ada tugas ditemukan.</div>`;
     return;
   }
 
-  container.innerHTML = filtered.map((item) => {
-    const isToday = item.tanggal === today;
-    const d = new Date(item.tanggal);
-    const dateFmt = isNaN(d) ? item.tanggal : d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
-    const statusType = getStatusStyle(item.status);
-    const isDone = statusType === 'selesai';
-    const hasLink = item.docLink && item.docLink.includes('http');
-
+  container.innerHTML = filtered.map(item => {
+    const statusLower = item.status.toLowerCase();
+    const isDone = statusLower.includes('selesai') || statusLower.includes('done');
+    const isProses = statusLower.includes('proses');
+    const sType = isDone ? 'selesai' : (isProses ? 'proses' : 'menunggu');
+    
+    const isToday = item.tanggal === todayStr;
+    
     return `
       <div class="task-item ${isDone ? 'is-done' : ''}">
-        <div class="status-indicator ${statusType}">
-          ${isDone ? '<i data-lucide="check" size="14"></i>' : ''}
+        <div class="status-indicator ${sType}">
+          ${isDone ? '<i data-lucide="check" size="12"></i>' : (isProses ? '<i data-lucide="play" size="10" style="fill:currentColor"></i>' : '')}
         </div>
         <div class="task-content">
           <div class="header-line">
             <h3 class="task-title">${item.job}</h3>
-            <span class="status-badge ${statusType}">${item.status}</span>
+            <span class="status-badge ${sType}">${item.status}</span>
           </div>
+          
           <div class="task-details">
             <div class="detail-chip ${isToday && !isDone ? 'date-badge' : ''}">
-              <i data-lucide="calendar" size="14"></i>
-              <span>${isToday ? 'Hari Ini' : dateFmt}</span>
+              <i data-lucide="calendar" size="12"></i>
+              <span>${isToday ? 'Hari Ini' : item.tanggal}</span>
             </div>
-            <!-- Menampilkan Data Jam/Durasi Pekerjaan -->
-            <div class="detail-chip">
-              <i data-lucide="clock" size="14"></i>
-              <span>${item.jam}</span>
-            </div>
-            <div class="detail-chip">
-              <i data-lucide="map-pin" size="14"></i>
-              <span>${item.area}</span>
-            </div>
+            <div class="detail-chip"><i data-lucide="clock" size="12"></i><span>${item.jam}</span></div>
+            <div class="detail-chip"><i data-lucide="map-pin" size="12"></i><span>${item.area}</span></div>
           </div>
-          <div class="task-details">
+          
+          <div class="task-details" style="margin-top: 4px;">
             <div class="detail-chip">
-              <i data-lucide="user" size="14"></i>
-              <span>${item.member}</span>
+              <i data-lucide="user" size="12"></i>
+              <span style="font-weight:600">${item.member}</span>
             </div>
-            <div class="detail-chip" style="opacity: 0.8">
+            <div class="detail-chip" style="color: var(--google-text-sub); font-size: 11px;">
                <span>PIC: ${item.pic}</span>
             </div>
           </div>
           
-          ${hasLink ? `
-            <button class="btn-action" onclick="openDocSheet('${item.docLink}', '${item.job.replace(/'/g, "\\'")}')">
-              <i data-lucide="file-text" size="16"></i> Dokumentasi
+          ${item.docLink.startsWith('http') ? `
+            <button class="btn-action" onclick="openDocSheet('${item.docLink}','${item.job.replace(/'/g,"\\\\'")}')">
+              <i data-lucide="file-text" size="14"></i> Dokumentasi
             </button>
           ` : ''}
         </div>
       </div>
     `;
   }).join('');
-  
   lucide.createIcons();
 }
 
-fetch(`${CSV_URL}&cachebust=${Date.now()}`).then(r => r.text()).then(csv => {
-  allData = parseCSV(csv);
-  const areaSet = new Set(allData.map(d => d.area));
-  const filterArea = document.getElementById("filterArea");
-  [...areaSet].filter(a => a && a !== "-").sort().forEach(a => {
-    const o = document.createElement("option"); o.value = a; o.textContent = a;
-    filterArea.appendChild(o);
-  });
-  document.getElementById("filterTanggal").value = getTodayStr();
-  document.getElementById("loading").style.display = "none";
-  render();
-});
+async function init() {
+  try {
+    const res = await fetch(`${CSV_URL}&cb=${Date.now()}`);
+    const csv = await res.text();
+    allData = parseCSV(csv);
+    
+    const areaSelect = document.getElementById("filterArea");
+    [...new Set(allData.map(d => d.area))].filter(a => a && a !== "-").sort().forEach(a => {
+      const o = document.createElement("option"); o.value = a; o.textContent = a;
+      areaSelect.appendChild(o);
+    });
 
+    document.getElementById("loading").style.display = "none";
+    render();
+  } catch (e) {
+    document.getElementById("loading").innerHTML = "Gagal memuat data.";
+  }
+}
+
+function openDocSheet(l, t) {
+  document.getElementById('docSheetTitle').innerText = t;
+  document.getElementById('docWebview').src = l.replace('/view', '/preview');
+  document.getElementById('externalLinkBtn').href = l;
+  document.getElementById('overlay').style.display = 'block';
+  setTimeout(() => document.getElementById('docSheet').classList.add('active'), 10);
+  window.history.pushState({s:1}, "");
+}
+
+function closeAllSheets() {
+  document.getElementById('docSheet').classList.remove('active');
+  setTimeout(() => { document.getElementById('overlay').style.display = 'none'; document.getElementById('docWebview').src = ''; }, 250);
+}
+
+window.addEventListener('popstate', closeAllSheets);
 document.getElementById("filterTanggal").addEventListener("change", render);
 document.getElementById("filterArea").addEventListener("change", render);
 document.getElementById("searchMember").addEventListener("input", render);
 document.getElementById("overlay").addEventListener("click", () => window.history.back());
-</script>
 
+init();
+</script>
 </body>
 </html>
 
