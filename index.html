@@ -3,38 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Job Monitor - Material 3 Style</title>
+<title>Job Monitor - Google Tasks Style</title>
 <!-- Lucide Icons -->
 <script src="https://unpkg.com/lucide@latest"></script>
-<!-- Inter Font -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
   :root {
-    /* M3 Light Theme Colors */
-    --md-sys-color-primary: #0061a4;
-    --md-sys-color-on-primary: #ffffff;
-    --md-sys-color-primary-container: #d1e4ff;
-    --md-sys-color-on-primary-container: #001d36;
-    
-    /* Tonal Colors (Secondary Container) */
-    --md-sys-color-secondary-container: #d7e3f7;
-    --md-sys-color-on-secondary-container: #101c2b;
-    
-    --md-sys-color-surface: #fdfcff;
-    --md-sys-color-on-surface: #1a1c1e;
-    --md-sys-color-surface-variant: #dfe3eb;
-    --md-sys-color-on-surface-variant: #43474e;
-    --md-sys-color-outline: #73777f;
-    --md-sys-color-surface-container: #f0f4f8;
-    --md-sys-color-surface-container-high: #e7ecf3;
-    --md-sys-color-tertiary-container: #ffd9e2;
-    --md-sys-color-on-tertiary-container: #3e001d;
+    --google-blue: #1a73e8;
+    --google-gray-bg: #ffffff;
+    --google-text-main: #202124;
+    --google-text-sub: #5f6368;
+    --google-divider: #dadce0;
+    --google-surface: #f8f9fa;
     
     /* Status Colors */
-    --status-done: #1a8a3e;
-    --status-process: #0061a4;
-    --status-pending: #8a6a1a;
+    --status-done: #1e8e3e;
+    --status-process: #1a73e8;
+    --status-pending: #f9ab00;
+    
+    /* Status BG Light */
+    --status-done-bg: #e6f4ea;
+    --status-process-bg: #e8f0fe;
+    --status-pending-bg: #fef7e0;
   }
 
   * { 
@@ -44,345 +36,313 @@
 
   body { 
     font-family: 'Inter', sans-serif; 
-    background-color: var(--md-sys-color-surface); 
-    color: var(--md-sys-color-on-surface);
+    background-color: var(--google-gray-bg); 
+    color: var(--google-text-main);
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    letter-spacing: -0.01em;
+    padding-bottom: 30px;
   }
 
-  header {
-    padding: 16px;
-    background: var(--md-sys-color-surface);
+  .controls-wrapper {
     position: sticky;
     top: 0;
+    background: #fff;
     z-index: 10;
-    border-bottom: 1px solid var(--md-sys-color-surface-variant);
-  }
-
-  .filter-section {
-    max-width: 600px;
-    margin: 0 auto;
+    padding: 16px 16px 12px 16px;
+    border-bottom: 1px solid var(--google-divider);
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
 
-  .search-bar {
-    background: var(--md-sys-color-surface-container);
-    border-radius: 28px;
-    padding: 4px 16px;
+  .search-container {
+    background: var(--google-surface);
+    border-radius: 24px;
+    padding: 6px 16px;
     display: flex;
     align-items: center;
     gap: 12px;
-    transition: box-shadow 0.2s;
-  }
-  
-  .search-bar:focus-within {
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    background: var(--md-sys-color-surface);
-    outline: 2px solid var(--md-sys-color-primary);
+    border: 1px solid transparent;
+    transition: all 0.2s;
   }
 
-  .input-search {
+  .search-container:focus-within {
+    background: #fff;
+    box-shadow: 0 1px 6px rgba(32,33,36,0.28);
+  }
+
+  .search-container input {
     background: transparent;
     border: none;
-    padding: 12px 0;
-    color: var(--md-sys-color-on-surface);
-    font-size: 16px;
     outline: none;
     flex: 1;
-    font-family: inherit;
+    font-size: 15px;
+    padding: 8px 0;
+    color: var(--google-text-main);
   }
 
-  .secondary-filters {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
   }
 
   .filter-item {
-    background: var(--md-sys-color-surface-container);
-    border-radius: 12px;
-    padding: 8px 12px;
+    flex: 1;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid var(--google-divider);
+    border-radius: 20px;
+    background: #fff;
   }
 
-  .select-field, .date-field {
-    background: transparent;
+  .filter-item i {
+    color: var(--google-text-sub);
+    flex-shrink: 0;
+  }
+
+  .filter-item select, 
+  .filter-item input {
     border: none;
-    color: var(--md-sys-color-on-surface);
-    font-size: 14px;
     outline: none;
-    width: 100%;
+    background: transparent;
     font-family: inherit;
-    cursor: pointer;
-  }
-
-  /* M3 Circular Progress Indicator */
-  .loading-container {
-    padding: 60px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    color: var(--md-sys-color-primary);
-    max-width: 600px;
-    margin: 0 auto;
+    font-size: 13px;
+    color: var(--google-text-main);
     width: 100%;
-  }
-
-  .m3-loader-circular {
-    width: 48px;
-    height: 48px;
-    border: 4px solid var(--md-sys-color-primary-container);
-    border-top: 4px solid var(--md-sys-color-primary);
-    border-radius: 50%;
-    animation: m3-spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  }
-
-  @keyframes m3-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  .loading-text {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--md-sys-color-on-surface-variant);
+    cursor: pointer;
   }
 
   .tasks-container {
-    flex: 1;
-    padding: 8px 16px 16px 16px;
-    max-width: 600px;
+    max-width: 800px;
     margin: 0 auto;
-    width: 100%;
   }
 
-  .task-card {
-    background: var(--md-sys-color-surface-container);
-    border-radius: 20px;
+  .task-item {
+    display: flex;
     padding: 16px;
-    margin-bottom: 12px;
-    border: 1px solid transparent;
+    gap: 16px;
+    border-bottom: 1px solid #f1f3f4;
+    transition: background 0.2s;
+  }
+  
+  .status-indicator {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--google-divider);
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .task-header {
+  .status-indicator.selesai { 
+    border-color: var(--status-done); 
+    background: var(--status-done); 
+    color: white; 
+  }
+  .status-indicator.proses { border-color: var(--status-process); }
+  .status-indicator.menunggu { border-color: var(--status-pending); }
+
+  .task-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .header-line {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 8px;
+    gap: 8px;
   }
 
   .task-title {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 400;
     margin: 0;
-    color: var(--md-sys-color-on-surface);
+    line-height: 1.4;
     flex: 1;
-    padding-right: 8px;
+    color: var(--google-text-main);
   }
 
   .status-badge {
-    background: var(--md-sys-color-primary-container);
-    color: var(--md-sys-color-on-primary-container);
-    padding: 4px 12px;
-    border-radius: 8px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 12px;
     white-space: nowrap;
   }
 
-  .task-info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 12px;
+  .status-badge.selesai { background: var(--status-done-bg); color: var(--status-done); }
+  .status-badge.proses { background: var(--status-process-bg); color: var(--status-process); }
+  .status-badge.menunggu { background: var(--status-pending-bg); color: var(--status-pending); }
+
+  .task-item.is-done .task-title {
+    text-decoration: line-through;
+    color: var(--google-text-sub);
   }
 
-  .info-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  .task-details {
     font-size: 13px;
-    color: var(--md-sys-color-on-surface-variant);
-  }
-
-  .info-item i {
-    color: var(--md-sys-color-primary);
-  }
-
-  .status-text {
-    font-weight: 700;
-  }
-  .status-selesai { color: var(--status-done); }
-  .status-proses { color: var(--status-process); }
-  .status-menunggu { color: var(--status-pending); }
-
-  .footer-row {
-    margin-top: 16px;
-    padding-top: 12px;
-    border-top: 1px solid var(--md-sys-color-surface-variant);
+    color: var(--google-text-sub);
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 2px;
+  }
+
+  .detail-chip {
+    display: flex;
     align-items: center;
+    gap: 6px;
   }
 
-  .tl-info {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--md-sys-color-on-surface-variant);
+  .date-badge {
+    color: var(--google-blue);
+    font-weight: 500;
   }
 
-  /* M3 Tonal Button Style */
-  .btn-tonal {
-    background-color: var(--md-sys-color-secondary-container);
-    color: var(--md-sys-color-on-secondary-container);
-    border: none;
-    padding: 10px 16px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
+  .btn-action {
+    background: #fff;
+    border: 1px solid var(--google-divider);
+    border-radius: 8px;
+    color: var(--google-blue);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 16px;
+    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 8px;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    text-decoration: none; /* For link-based buttons */
+    margin-top: 10px;
+    align-self: flex-start;
   }
 
-  .btn-tonal:hover {
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    filter: brightness(0.95);
-  }
-
-  .btn-tonal:active {
-    transform: scale(0.96);
-    background-color: var(--md-sys-color-surface-variant);
-  }
-
-  /* Bottom Sheet Material 3 */
+  /* Overlay & Sheets */
   .overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.4); display: none; z-index: 100;
+    background: rgba(32, 33, 36, 0.6); display: none; z-index: 100;
   }
   .sheet {
     position: fixed; bottom: -100%; left: 0; width: 100%;
-    background: var(--md-sys-color-surface-container-high);
-    border-top-left-radius: 28px; border-top-right-radius: 28px;
-    padding: 16px 16px 40px 16px; z-index: 101;
-    transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    background: #fff; border-top-left-radius: 28px; border-top-right-radius: 28px;
+    z-index: 101; transition: bottom 0.3s cubic-bezier(0, 0, 0.2, 1);
   }
   .sheet.active { bottom: 0; }
-  .sheet-handle {
-    width: 32px; height: 4px; background: var(--md-sys-color-outline);
-    border-radius: 2px; margin: 0 auto 24px auto; opacity: 0.4;
-  }
-  .sheet-title { 
-    font-size: 14px; 
-    margin-bottom: 24px; 
-    font-weight: 600; 
-    color: var(--md-sys-color-on-surface-variant);
-    text-align: center;
-    letter-spacing: 0.1px;
+  .sheet-webview { height: 92vh; display: flex; flex-direction: column; }
+  .webview-container { flex: 1; width: 100%; border: none; background: #fff; }
+  .sheet-header-handle { height: 4px; width: 32px; background: #dadce0; border-radius: 2px; margin: 12px auto; }
+  
+  .sheet-header-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px 12px 12px;
+    border-bottom: 1px solid var(--google-divider);
   }
   
-  .sheet-btn-group {
+  .sheet-title-wrapper {
+    flex: 1;
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    align-items: center;
+    gap: 4px;
+    overflow: hidden;
   }
 
-  .btn-close-sheet {
-    margin-top: 12px;
+  .sheet-title { 
+    font-weight: 500; 
+    font-size: 16px; 
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .btn-header-icon {
     background: transparent;
-    color: var(--md-sys-color-primary);
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    border-radius: 20px;
-    padding: 12px;
-    font-weight: 700;
+    color: var(--google-text-sub);
+    cursor: pointer;
+    flex-shrink: 0;
   }
 
-  .empty { text-align: center; padding: 60px 20px; color: var(--md-sys-color-outline); }
+  .btn-header-icon.primary {
+    color: var(--google-blue);
+  }
+
+  .loader { display: flex; justify-content: center; padding: 60px; }
+  .spinner { width: 28px; height: 28px; border: 3px solid #f3f3f3; border-top: 3px solid var(--google-blue); border-radius: 50%; animation: spin 1s linear infinite; }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  .empty { text-align: center; padding: 80px 20px; color: var(--google-text-sub); font-size: 14px; }
 </style>
 </head>
 <body>
 
-<header id="appHeader">
-  <div class="filter-section">
-    <div class="search-bar">
-      <i data-lucide="search" size="20"></i>
-      <input type="text" id="searchMember" class="input-search" placeholder="Cari nama member..." autocomplete="off">
+<div class="controls-wrapper">
+  <div class="search-container">
+    <i data-lucide="search" size="20" style="color: #5f6368"></i>
+    <input type="text" id="searchMember" placeholder="Cari nama member atau tugas...">
+  </div>
+
+  <div class="filter-row">
+    <div class="filter-item">
+      <i data-lucide="map-pin" size="16"></i>
+      <select id="filterArea">
+        <option value="">Semua Area</option>
+      </select>
     </div>
-    
-    <div class="secondary-filters">
-      <div class="filter-item">
-        <i data-lucide="map" size="18"></i>
-        <select id="filterArea" class="select-field">
-          <option value="">Semua Area</option>
-        </select>
-      </div>
-      <div class="filter-item">
-        <i data-lucide="calendar-days" size="18"></i>
-        <input type="date" id="filterTanggal" class="date-field">
-      </div>
+    <div class="filter-item">
+      <i data-lucide="calendar" size="16"></i>
+      <input type="date" id="filterTanggal">
     </div>
   </div>
-</header>
+</div>
 
 <main class="tasks-container">
-  <!-- Status awal loading -->
-  <div id="loading" class="loading-container">
-    <div class="m3-loader-circular"></div>
-    <div class="loading-text">Sinkronisasi data...</div>
+  <div id="loading" class="loader">
+    <div class="spinner"></div>
   </div>
   <div id="taskList"></div>
 </main>
 
-<!-- Bottom Sheet & Overlay -->
 <div class="overlay" id="overlay"></div>
-<div class="sheet" id="sheet">
-  <div class="sheet-handle"></div>
-  <div class="sheet-title">Hubungi Pengawas</div>
-  
-  <div class="sheet-btn-group">
-    <a href="#" id="waPohara" class="btn-tonal" style="justify-content: center; padding: 16px;" target="_blank">
-      <i data-lucide="message-circle" size="24"></i> 
-      <span>Pohara Ayub</span>
+
+<div class="sheet sheet-webview" id="docSheet">
+  <div class="sheet-header-handle"></div>
+  <div class="sheet-header-content">
+    <div class="sheet-title-wrapper">
+      <button class="btn-header-icon" onclick="closeAllSheets()" title="Kembali">
+        <i data-lucide="arrow-left" size="24"></i>
+      </button>
+      <h4 class="sheet-title" id="docSheetTitle">Dokumentasi</h4>
+    </div>
+    <a href="#" id="externalLinkBtn" target="_blank" class="btn-header-icon primary" title="Buka di tab baru">
+      <i data-lucide="external-link" size="22"></i>
     </a>
-    
-    <a href="#" id="waSadulloh" class="btn-tonal" style="justify-content: center; padding: 16px;" target="_blank">
-      <i data-lucide="message-circle" size="24"></i> 
-      <span>Sadulloh</span>
-    </a>
-    
-    <button class="btn-close-sheet btn-tonal" style="background: transparent; color: var(--md-sys-color-primary);" id="closeSheet">
-      Tutup
-    </button>
   </div>
+  <iframe id="docWebview" class="webview-container" src="about:blank"></iframe>
 </div>
 
 <script>
-const WA_POHARA = "6289637126728";
-const WA_SADULLOH = "6285281587927";
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSy72yhzMb2711VnnX-K1x6DG2-HNdlGRJfeORikr4x6ylI5ETjTaEjXzJ4KR0a632i65ZJpq667B-t/pub?output=csv";
 
 let allData = [];
-let isSheetOpen = false;
 
-// Mendapatkan format tanggal hari ini YYYY-MM-DD
 function getTodayStr() {
   return new Date().toISOString().split('T')[0];
 }
 
-// Menangani normalisasi format tanggal dari CSV
 function normalizeDate(str) {
   if(!str) return "";
   const parts = str.split(/[-/]/);
@@ -390,81 +350,75 @@ function normalizeDate(str) {
   return str;
 }
 
-// Parsing CSV menjadi Array of Objects
 function parseCSV(text) {
   const lines = text.trim().split(/\r?\n/);
   return lines.slice(1).map(line => {
-    const regex = /,(?=(?:(?:[^"]*"){2})*[^"]*$)/;
-    const parts = line.split(regex);
-    const clean = parts.map(p => p.trim().replace(/^"|"$/g, '').replace(/""/g, '"'));
+    const columns = [];
+    let current = "";
+    let inQuotes = false;
     
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      if (char === '"' && line[i+1] === '"') {
+        current += '"'; i++;
+      } else if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        columns.push(current.trim());
+        current = "";
+      } else {
+        current += char;
+      }
+    }
+    columns.push(current.trim());
+
     return {
-      tanggal: normalizeDate(clean[0]),
-      job: clean[1] || "Tanpa Judul",
-      area: clean[2] || "-",
-      member: clean[3] || "-",
-      durasi: clean[4] || "-",
-      pic: clean[5] || "-",
-      status: clean[6] || "Menunggu"
+      tanggal: normalizeDate(columns[0]),
+      job: columns[1] || "Tanpa Judul",
+      area: columns[2] || "-",
+      member: columns[3] || "-",
+      jam: columns[4] || "-", // Menampilkan Kolom Durasi/Jam
+      pic: columns[5] || "-",
+      status: columns[6] || "Menunggu",
+      docLink: (columns[7] || "").trim().replace(/\s/g, '')
     };
   }).filter(i => i.job !== "Tanpa Judul" && i.tanggal !== "");
 }
 
-// Fungsi untuk membuka Bottom Sheet
-function openSheet() {
-  isSheetOpen = true;
-  document.getElementById('waPohara').href = `https://wa.me/${WA_POHARA}`;
-  document.getElementById('waSadulloh').href = `https://wa.me/${WA_SADULLOH}`;
-  
-  const overlay = document.getElementById('overlay');
-  const sheet = document.getElementById('sheet');
-  
-  overlay.style.display = 'block';
-  // Memberikan sedikit jeda agar transisi animasi CSS berjalan
-  setTimeout(() => {
-    sheet.classList.add('active');
-  }, 10);
-  
-  // Menggunakan pushState agar tombol back di HP menutup sheet bukan keluar app
-  window.history.pushState({ sheetOpen: true }, "");
-}
-
-// Fungsi untuk menutup Bottom Sheet
-function closeSheet() {
-  if (!isSheetOpen) return;
-  isSheetOpen = false;
-  
-  const overlay = document.getElementById('overlay');
-  const sheet = document.getElementById('sheet');
-  
-  sheet.classList.remove('active');
-  setTimeout(() => {
-    overlay.style.display = 'none';
-  }, 400); // Sesuai durasi transisi di CSS
-  
-  if (window.history.state && window.history.state.sheetOpen) {
-    window.history.back();
-  }
-}
-
-// Menangani navigasi balik browser/HP
-window.addEventListener('popstate', (event) => {
-  if (isSheetOpen) {
-    isSheetOpen = false;
-    document.getElementById('sheet').classList.remove('active');
-    setTimeout(() => document.getElementById('overlay').style.display = 'none', 400);
-  }
-});
-
-// Penentuan warna teks berdasarkan status
-function getStatusClass(status) {
+function getStatusStyle(status) {
   const s = status.toLowerCase();
-  if (s.includes('selesai')) return 'status-selesai';
-  if (s.includes('proses') || s.includes('jalan') || s.includes('kerja')) return 'status-proses';
-  return 'status-menunggu';
+  if (s.includes('selesai') || s.includes('done')) return 'selesai';
+  if (s.includes('proses') || s.includes('jalan')) return 'proses';
+  return 'menunggu';
 }
 
-// Merender daftar tugas ke DOM
+function openDocSheet(link, title) {
+  if(!link || link === "-" || link === "") return;
+  let finalLink = link;
+  if (link.includes('drive.google.com') && link.includes('/view')) {
+      finalLink = link.replace('/view', '/preview');
+  }
+  document.getElementById('docSheetTitle').innerText = title;
+  document.getElementById('docWebview').src = finalLink;
+  document.getElementById('externalLinkBtn').href = link;
+  document.getElementById('overlay').style.display = 'block';
+  setTimeout(() => document.getElementById('docSheet').classList.add('active'), 10);
+  window.history.pushState({ sheet: 'doc' }, "");
+}
+
+function closeAllSheets() {
+  const sheet = document.getElementById('docSheet');
+  if (sheet.classList.contains('active')) {
+    sheet.classList.remove('active');
+    setTimeout(() => {
+      document.getElementById('overlay').style.display = 'none';
+      document.getElementById('docWebview').src = 'about:blank';
+    }, 300);
+  }
+}
+
+window.addEventListener('popstate', closeAllSheets);
+
 function render() {
   const container = document.getElementById("taskList");
   const fDate = document.getElementById("filterTanggal").value;
@@ -475,53 +429,62 @@ function render() {
   const filtered = allData.filter(d => {
     return (fDate ? d.tanggal === fDate : true) &&
            (fArea ? d.area === fArea : true) &&
-           (fSearch ? d.member.toLowerCase().includes(fSearch) : true);
+           (fSearch ? (d.member.toLowerCase().includes(fSearch) || d.job.toLowerCase().includes(fSearch)) : true);
   });
 
   if (filtered.length === 0) {
-    container.innerHTML = `<div class="empty">Tidak ada data untuk kriteria ini.</div>`;
+    container.innerHTML = `<div class="empty">Tidak ada pekerjaan ditemukan.</div>`;
     return;
   }
 
-  container.innerHTML = filtered.map(item => {
+  container.innerHTML = filtered.map((item) => {
     const isToday = item.tanggal === today;
     const d = new Date(item.tanggal);
     const dateFmt = isNaN(d) ? item.tanggal : d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
-    const statusClass = getStatusClass(item.status);
+    const statusType = getStatusStyle(item.status);
+    const isDone = statusType === 'selesai';
+    const hasLink = item.docLink && item.docLink.includes('http');
 
     return `
-      <div class="task-card">
-        <div class="task-header">
-          <h3 class="task-title">${item.job}</h3>
-          <span class="status-badge">${isToday ? 'Hari Ini' : dateFmt}</span>
+      <div class="task-item ${isDone ? 'is-done' : ''}">
+        <div class="status-indicator ${statusType}">
+          ${isDone ? '<i data-lucide="check" size="14"></i>' : ''}
         </div>
-        
-        <div class="task-info-grid">
-          <div class="info-item">
-            <i data-lucide="map-pin" size="16"></i>
-            <span>${item.area}</span>
+        <div class="task-content">
+          <div class="header-line">
+            <h3 class="task-title">${item.job}</h3>
+            <span class="status-badge ${statusType}">${item.status}</span>
           </div>
-          <div class="info-item">
-            <i data-lucide="users" size="16"></i>
-            <span>${item.member}</span>
+          <div class="task-details">
+            <div class="detail-chip ${isToday && !isDone ? 'date-badge' : ''}">
+              <i data-lucide="calendar" size="14"></i>
+              <span>${isToday ? 'Hari Ini' : dateFmt}</span>
+            </div>
+            <!-- Menampilkan Data Jam/Durasi Pekerjaan -->
+            <div class="detail-chip">
+              <i data-lucide="clock" size="14"></i>
+              <span>${item.jam}</span>
+            </div>
+            <div class="detail-chip">
+              <i data-lucide="map-pin" size="14"></i>
+              <span>${item.area}</span>
+            </div>
           </div>
-          <div class="info-item">
-            <i data-lucide="activity" size="16"></i>
-            <span class="status-text ${statusClass}">${item.status}</span>
+          <div class="task-details">
+            <div class="detail-chip">
+              <i data-lucide="user" size="14"></i>
+              <span>${item.member}</span>
+            </div>
+            <div class="detail-chip" style="opacity: 0.8">
+               <span>PIC: ${item.pic}</span>
+            </div>
           </div>
-          <div class="info-item">
-            <i data-lucide="clock" size="16"></i>
-            <span>${item.durasi}</span>
-          </div>
-        </div>
-
-        <div class="footer-row">
-          <span class="tl-info">PIC: ${item.pic}</span>
-          <!-- Hanya tombol ini yang bisa memicu openSheet -->
-          <button class="btn-tonal" onclick="openSheet()">
-            <i data-lucide="message-circle" size="18"></i>
-            Hubungi
-          </button>
+          
+          ${hasLink ? `
+            <button class="btn-action" onclick="openDocSheet('${item.docLink}', '${item.job.replace(/'/g, "\\'")}')">
+              <i data-lucide="file-text" size="16"></i> Dokumentasi
+            </button>
+          ` : ''}
         </div>
       </div>
     `;
@@ -530,31 +493,23 @@ function render() {
   lucide.createIcons();
 }
 
-// Inisialisasi awal aplikasi
 fetch(`${CSV_URL}&cachebust=${Date.now()}`).then(r => r.text()).then(csv => {
   allData = parseCSV(csv);
-  
-  // Isi dropdown area secara otomatis
   const areaSet = new Set(allData.map(d => d.area));
   const filterArea = document.getElementById("filterArea");
-  filterArea.innerHTML = '<option value="">Semua Area</option>';
-  [...areaSet].filter(Boolean).sort().forEach(a => {
+  [...areaSet].filter(a => a && a !== "-").sort().forEach(a => {
     const o = document.createElement("option"); o.value = a; o.textContent = a;
     filterArea.appendChild(o);
   });
-  
-  // Set default filter tanggal ke hari ini
   document.getElementById("filterTanggal").value = getTodayStr();
   document.getElementById("loading").style.display = "none";
   render();
 });
 
-// Event Listeners
 document.getElementById("filterTanggal").addEventListener("change", render);
 document.getElementById("filterArea").addEventListener("change", render);
 document.getElementById("searchMember").addEventListener("input", render);
-document.getElementById("overlay").addEventListener("click", closeSheet);
-document.getElementById("closeSheet").addEventListener("click", closeSheet);
+document.getElementById("overlay").addEventListener("click", () => window.history.back());
 </script>
 
 </body>
