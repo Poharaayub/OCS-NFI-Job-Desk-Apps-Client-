@@ -119,6 +119,12 @@
     border: 1px solid var(--m3-surface-variant);
     display: flex;
     gap: 16px;
+    position: relative;
+  }
+
+  .task-card.is-today {
+    border-left: 4px solid var(--m3-primary);
+    background: linear-gradient(to right, #f0f4ff, #ffffff);
   }
   
   .status-indicator {
@@ -350,7 +356,29 @@ function parseCSV(text) {
     };
   }).filter(i => i.tanggal !== "");
 
-  return data.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+  // Aturan Penyortiran:
+  // 1. Hari ini (Paling atas)
+  // 2. Status Selesai / Done (Kedua)
+  // 3. Sisanya (Terakhir)
+  return data.sort((a, b) => {
+    const isAToday = a.tanggal === todayStr;
+    const isBToday = b.tanggal === todayStr;
+    const isADone = a.status.toLowerCase().includes('selesai') || a.status.toLowerCase().includes('done');
+    const isBDone = b.status.toLowerCase().includes('selesai') || b.status.toLowerCase().includes('done');
+
+    // Prioritas 1: Hari Ini
+    if (isAToday && !isBToday) return -1;
+    if (!isAToday && isBToday) return 1;
+
+    // Prioritas 2: Status Selesai (hanya jika keduanya bukan hari ini)
+    if (!isAToday && !isBToday) {
+      if (isADone && !isBDone) return -1;
+      if (!isADone && isBDone) return 1;
+    }
+
+    // Default: Urutkan berdasarkan tanggal terbaru
+    return new Date(b.tanggal) - new Date(a.tanggal);
+  });
 }
 
 function render() {
@@ -374,10 +402,11 @@ function render() {
     const sLower = item.status.toLowerCase();
     const isDone = sLower.includes('selesai') || sLower.includes('done');
     const isProses = sLower.includes('proses');
+    const isToday = item.tanggal === todayStr;
     const sType = isDone ? 'selesai' : (isProses ? 'proses' : 'menunggu');
     
     return `
-      <div class="task-card ${isDone ? 'is-done' : ''}">
+      <div class="task-card ${isDone ? 'is-done' : ''} ${isToday ? 'is-today' : ''}">
         <div class="status-indicator ${sType}">
           ${isDone ? '<i data-lucide="check" size="14"></i>' : ''}
         </div>
@@ -388,7 +417,12 @@ function render() {
           </div>
           
           <div class="task-meta">
-            <div class="meta-item"><i data-lucide="calendar" size="14"></i><span>${item.tanggal === todayStr ? 'Hari Ini' : item.tanggal}</span></div>
+            <div class="meta-item">
+              <i data-lucide="calendar" size="14"></i>
+              <span style="${isToday ? 'font-weight: 500; color: var(--m3-primary)' : ''}">
+                ${isToday ? 'Hari Ini' : item.tanggal}
+              </span>
+            </div>
             <div class="meta-item"><i data-lucide="clock" size="14"></i><span>${item.jam}</span></div>
             <div class="meta-item"><i data-lucide="map-pin" size="14"></i><span>${item.area}</span></div>
           </div>
@@ -436,7 +470,6 @@ function openDocSheet(l, t) {
   document.getElementById('externalLinkBtn').href = l;
   document.getElementById('overlay').style.display = 'block';
   
-  // Push state agar tombol back bawaan browser bisa digunakan
   window.history.pushState({open: true}, "");
   
   setTimeout(() => document.getElementById('docSheet').classList.add('active'), 10);
@@ -452,17 +485,14 @@ function closeAllSheets() {
   }, 300);
 }
 
-// Fungsi bantu untuk memicu navigasi balik
 function handleBack() {
   if (isSheetOpen) window.history.back();
 }
 
-// Listener popstate menangkap semua aksi "kembali" (tombol browser, swipe back, history.back())
 window.addEventListener('popstate', () => {
   closeAllSheets();
 });
 
-// Menutup jika area luar disentuh
 document.getElementById('overlay').onclick = handleBack;
 
 document.getElementById("filterTanggal").addEventListener("change", render);
