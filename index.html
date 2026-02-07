@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Job Monitor - Material 3 Style</title>
+<title>Job Monitor - Compact M3</title>
 <!-- Lucide Icons -->
 <script src="https://unpkg.com/lucide@latest"></script>
 <!-- Google Fonts -->
@@ -11,22 +11,37 @@
 
 <style>
   :root {
-    /* M3 Color Palette */
-    --m3-primary: #0061a4;
+    /* M3 2026 Terbaru - Blue Palette */
+    --m3-primary: #005FAF; 
     --m3-on-primary: #ffffff;
-    --m3-primary-container: #d1e4ff;
-    --m3-on-primary-container: #001d36;
-    --m3-surface: #fdfbff;
-    --m3-on-surface: #1a1c1e;
-    --m3-surface-variant: #dfe2eb;
-    --m3-on-surface-variant: #43474e;
-    --m3-outline: #73777f;
-    --m3-secondary-container: #e1e2ec;
-    --m3-on-secondary-container: #191c1e;
+    --m3-primary-container: #D1E4FF;
+    --m3-on-primary-container: #001D36;
     
-    --status-done: #1e8e3e;
-    --status-done-bg: #e6f4ea;
+    --m3-surface: #F8F9FF;
+    --m3-on-surface: #191C1E;
+    --m3-surface-container: #F0F1F7;
+    --m3-surface-container-high: #E2E2E9;
+    
+    --m3-outline-variant: #C3C7CF;
+
+    /* Dynamic Status Colors M3 (Update: Authentic Green M3 for Done) */
+    --status-done-bg: #C4EED0; /* M3 Green Container */
+    --status-done-text: #06210E; /* M3 On Green Container */
+    --status-pending-bg: #FFE08D;
+    --status-pending-text: #241A00;
+    --status-process-bg: #D1E4FF;
+    --status-process-text: #001D36;
+    --status-cancel-bg: #FFDAD6;
+    --status-cancel-text: #410002;
   }
+
+  /* Compact Tonal Variations */
+  .m3-tonal-0 { --card-bg: #EFF1F8; }
+  .m3-tonal-1 { --card-bg: #F5F0F0; }
+  .m3-tonal-2 { --card-bg: #EDF2EA; }
+  .m3-tonal-3 { --card-bg: #F8F1E7; }
+  .m3-tonal-4 { --card-bg: #F1F0F5; }
+  .m3-tonal-5 { --card-bg: #F0F4F4; }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
@@ -35,119 +50,93 @@
     background-color: var(--m3-surface); 
     color: var(--m3-on-surface);
     margin: 0;
-    padding-bottom: 20px;
-    font-size: 14px;
-    overflow-x: hidden;
+    padding-bottom: 16px;
+    font-size: 13px;
+    line-height: 1.4;
   }
 
-  /* Header & Controls */
-  .controls-wrapper {
+  .header-controls {
     position: sticky;
     top: 0;
-    background: var(--m3-surface);
+    background: rgba(248, 249, 255, 0.95);
+    backdrop-filter: blur(12px);
     z-index: 10;
-    padding: 16px;
+    padding: 10px 16px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    border-bottom: 1px solid var(--m3-surface-variant);
+    gap: 8px;
+    border-bottom: 1px solid var(--m3-outline-variant);
   }
 
-  /* Search Bar */
-  .search-container {
-    background: var(--m3-secondary-container);
-    border-radius: 28px;
-    padding: 0 16px;
-    height: 48px;
+  .search-box {
+    background: var(--m3-surface-container-high);
+    border-radius: 12px;
+    padding: 0 12px;
+    height: 40px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
   }
 
-  .search-container input {
+  .search-box input {
     background: transparent;
     border: none;
     outline: none;
     flex: 1;
-    font-size: 15px;
+    font-size: 14px;
     color: var(--m3-on-surface);
   }
 
-  /* Filter Row */
-  .filter-row {
+  .filter-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 6px;
   }
 
-  .filter-chip {
+  .filter-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 0 12px;
-    height: 40px;
-    border: 1px solid var(--m3-outline);
-    border-radius: 10px;
-    background: transparent;
-    color: var(--m3-on-surface-variant);
+    gap: 6px;
+    padding: 0 10px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--m3-surface-container);
   }
 
-  .filter-chip select, 
-  .filter-chip input {
+  .filter-item select, .filter-item input {
     border: none;
     outline: none;
     background: transparent;
-    font-size: 13px;
-    color: inherit;
-    font-family: inherit;
+    font-size: 12px;
     width: 100%;
-    cursor: pointer;
+    font-family: inherit;
   }
 
-  /* Tasks Styling */
-  .tasks-container {
-    max-width: 700px;
+  .tasks-area {
+    max-width: 600px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 12px;
   }
 
-  .task-card {
-    background: #fff;
+  .job-card {
+    background: var(--card-bg, var(--m3-surface-container));
     border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 12px;
-    border: 1px solid var(--m3-surface-variant);
+    padding: 14px;
+    margin-bottom: 10px;
     display: flex;
-    gap: 16px;
-    position: relative;
+    flex-direction: column;
+    gap: 8px;
+    transition: transform 0.1s ease;
   }
 
-  .task-card.is-today {
-    border-left: 4px solid var(--m3-primary);
-    background: linear-gradient(to right, #f0f4ff, #ffffff);
-  }
-  
-  .status-indicator {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 2px solid var(--m3-outline);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 2px;
+  .job-card:active { transform: scale(0.98); }
+
+  .job-card.is-today {
+    background: var(--m3-primary-container);
+    box-shadow: 0 2px 8px rgba(0, 95, 175, 0.08);
   }
 
-  .status-indicator.selesai { 
-    border-color: var(--status-done); 
-    background: var(--status-done);
-    color: #fff; 
-  }
-
-  .task-content { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-  
-  .task-header {
+  .job-card-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -156,350 +145,273 @@
 
   .task-title { 
     font-family: 'Google Sans', sans-serif;
-    font-size: 15px; 
+    font-size: 15px;
     font-weight: 500; 
-    margin: 0; 
+    margin: 0;
     color: var(--m3-on-surface);
+    line-height: 1.2;
   }
 
-  .is-done .task-title { text-decoration: line-through; opacity: 0.5; }
-
-  .m3-badge {
+  /* Status Tag Dynamic Styles */
+  .status-tag {
     font-size: 10px;
-    font-weight: 500;
-    padding: 2px 8px;
-    border-radius: 6px;
-    background: var(--m3-secondary-container);
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     white-space: nowrap;
   }
-  
-  .m3-badge.selesai { background: var(--status-done-bg); color: var(--status-done); }
 
-  .task-meta {
+  .status-selesai { background: var(--status-done-bg); color: var(--status-done-text); }
+  .status-menunggu { background: var(--status-pending-bg); color: var(--status-pending-text); }
+  .status-proses { background: var(--status-process-bg); color: var(--status-process-text); }
+  .status-batal { background: var(--status-cancel-bg); color: var(--status-cancel-text); }
+  .status-default { background: var(--m3-surface-container-high); color: var(--m3-on-surface); }
+
+  .info-row {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    color: var(--m3-on-surface-variant);
     font-size: 12px;
-    margin-top: 4px;
+    opacity: 0.75;
   }
 
-  .meta-item { display: flex; align-items: center; gap: 4px; }
+  .info-chip { display: flex; align-items: center; gap: 4px; }
 
-  .btn-m3-tonal {
-    background: var(--m3-primary-container);
-    color: var(--m3-on-primary-container);
+  .member-section {
+    padding-top: 8px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12.5px;
+  }
+
+  .btn-doc {
+    background: var(--m3-primary);
+    color: var(--m3-on-primary);
     border: none;
     border-radius: 12px;
-    padding: 8px 16px;
-    font-size: 13px;
+    padding: 6px 14px;
+    font-size: 12px;
     font-weight: 500;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    margin-top: 8px;
+    gap: 6px;
+    margin-top: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   }
 
-  /* M3 Modal Bottom Sheet - 95% Height */
-  .overlay { 
-    position: fixed; 
-    top: 0; left: 0; width: 100%; height: 100%; 
-    background: rgba(0,0,0,0.32); 
-    display: none; 
-    z-index: 100; 
+  .btn-doc:hover { opacity: 0.9; }
+
+  .sheet-overlay { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(0,0,0,0.4); display: none; z-index: 100; 
   }
 
-  .sheet {
-    position: fixed; 
-    bottom: -100%; 
-    left: 0; 
-    width: 100%;
-    height: 95vh; 
-    background: var(--m3-surface); 
-    border-top-left-radius: 28px; 
-    border-top-right-radius: 28px;
-    z-index: 101; 
-    transition: bottom 0.3s cubic-bezier(0.1, 0.7, 0.1, 1);
-    box-shadow: 0 -8px 24px rgba(0,0,0,0.12);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+  .m3-sheet {
+    position: fixed; bottom: -100%; left: 0; width: 100%; height: 90vh; 
+    background: var(--m3-surface); border-top-left-radius: 24px; border-top-right-radius: 24px;
+    z-index: 101; transition: bottom 0.3s cubic-bezier(0.1, 0.7, 0.1, 1);
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.1);
   }
 
-  .sheet.active { bottom: 0; }
+  .m3-sheet.active { bottom: 0; }
 
-  .sheet-header-handle { 
-    height: 4px; 
-    width: 32px; 
-    background: var(--m3-on-surface-variant); 
-    opacity: 0.4; 
-    border-radius: 2px; 
-    margin: 12px auto 8px; 
-    flex-shrink: 0; 
+  .drag-handle { 
+    height: 4px; width: 32px; background: var(--m3-outline-variant); 
+    border-radius: 2px; margin: 12px auto; 
   }
   
-  .sheet-top-bar {
-    padding: 4px 8px 12px; 
-    display: flex; 
-    align-items: center; 
-    border-bottom: 1px solid var(--m3-surface-variant);
-    flex-shrink: 0;
+  .sheet-header {
+    padding: 0 12px 12px; display: flex; align-items: center; 
+    border-bottom: 1px solid var(--m3-surface-container);
   }
 
-  .btn-icon-m3 {
-    background: transparent;
-    border: none;
-    border-radius: 50%;
-    padding: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--m3-on-surface-variant);
-  }
-
-  .loader { display: flex; justify-content: center; padding: 50px; }
-  .spinner { width: 32px; height: 32px; border: 4px solid var(--m3-secondary-container); border-top: 4px solid var(--m3-primary); border-radius: 50%; animation: spin 1s linear infinite; }
-  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  .loader-box { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 0; gap: 10px; }
+  .spin { width: 32px; height: 32px; border: 3px solid var(--m3-surface-container); border-top: 3px solid var(--m3-primary); border-radius: 50%; animation: rot 1s linear infinite; }
+  @keyframes rot { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
-<div class="controls-wrapper">
-  <div class="search-container">
-    <i data-lucide="search" size="18" style="color: var(--m3-on-surface-variant)"></i>
-    <input type="text" id="searchMember" placeholder="Cari tugas atau member...">
+<header class="header-controls">
+  <div class="search-box">
+    <i data-lucide="search" size="16"></i>
+    <input type="text" id="searchInput" placeholder="Cari member, tugas, PIC...">
   </div>
 
-  <div class="filter-row">
-    <div class="filter-chip">
-      <i data-lucide="map-pin" size="16"></i>
-      <select id="filterArea"><option value="">Semua Area</option></select>
+  <div class="filter-grid">
+    <div class="filter-item">
+      <i data-lucide="map-pin" size="14"></i>
+      <select id="areaFilter"><option value="">Area</option></select>
     </div>
-    <div class="filter-chip">
-      <i data-lucide="calendar" size="16"></i>
-      <input type="date" id="filterTanggal">
+    <div class="filter-item">
+      <i data-lucide="calendar" size="14"></i>
+      <input type="date" id="dateFilter">
     </div>
   </div>
-</div>
+</header>
 
-<main class="tasks-container">
-  <div id="loading" class="loader"><div class="spinner"></div></div>
-  <div id="taskList"></div>
+<main class="tasks-area">
+  <div id="loader" class="loader-box">
+    <div class="spin"></div>
+    <span style="opacity: 0.6; font-size: 12px;">Memuat data...</span>
+  </div>
+  <div id="cardsList"></div>
 </main>
 
-<!-- Bottom Sheet M3 -->
-<div class="overlay" id="overlay"></div>
-<div class="sheet" id="docSheet">
-  <div class="sheet-header-handle"></div>
-  <div class="sheet-top-bar">
-    <button class="btn-icon-m3" onclick="handleBack()">
-      <i data-lucide="arrow-left" size="24"></i>
+<div class="sheet-overlay" id="sheetOverlay"></div>
+<div class="m3-sheet" id="docSheet">
+  <div class="drag-handle"></div>
+  <div class="sheet-header">
+    <button style="background:none; border:none; padding:8px; cursor:pointer; display:flex; align-items:center;" onclick="goBack()">
+      <i data-lucide="chevron-left" size="24"></i>
     </button>
-    <h3 style="flex:1; margin:0 8px; font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: 'Google Sans'; font-weight: 400; color: var(--m3-on-surface);" id="docSheetTitle">Dokumen</h3>
-    <a href="#" id="externalLinkBtn" target="_blank" class="btn-icon-m3" style="color: var(--m3-primary)">
-      <i data-lucide="external-link" size="24"></i>
+    <h3 style="flex:1; margin:0 8px; font-size:16px; font-family:'Google Sans'; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="sheetTitle">Dokumen</h3>
+    <a href="#" id="outLink" target="_blank" style="padding:8px; color:var(--m3-primary); display:flex; align-items:center;">
+      <i data-lucide="external-link" size="20"></i>
     </a>
   </div>
-  <iframe id="docWebview" style="flex:1; border:none; width:100%; background: #fff;"></iframe>
+  <iframe id="sheetFrame" style="flex:1; border:none; width:100%; background:#fff;"></iframe>
 </div>
 
 <script>
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSy72yhzMb2711VnnX-K1x6DG2-HNdlGRJfeORikr4x6ylI5ETjTaEjXzJ4KR0a632i65ZJpq667B-t/pub?output=csv";
-let allData = [];
-let isSheetOpen = false;
+const DATA_SOURCE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSy72yhzMb2711VnnX-K1x6DG2-HNdlGRJfeORikr4x6ylI5ETjTaEjXzJ4KR0a632i65ZJpq667B-t/pub?output=csv";
+let jobData = [];
+let sheetActive = false;
+const today = new Date().toISOString().split('T')[0];
 
-function getTodayStr() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-const todayStr = getTodayStr();
-
-function normalizeDate(str) {
-  if(!str) return "";
-  const parts = str.split(/[-/]/);
-  if(parts.length === 3) {
-    if(parts[0].length <= 2 && parts[2].length === 4) {
-      return `${parts[2]}-${String(parts[1]).padStart(2,'0')}-${String(parts[0]).padStart(2,'0')}`;
-    }
-    if(parts[0].length === 4) {
-      return `${parts[0]}-${String(parts[1]).padStart(2,'0')}-${String(parts[2]).padStart(2,'0')}`;
-    }
+function fixDate(val) {
+  if(!val) return "";
+  const pts = val.split(/[-/]/);
+  if(pts.length === 3) {
+    if(pts[0].length === 4) return `${pts[0]}-${pts[1].padStart(2,'0')}-${pts[2].padStart(2,'0')}`;
+    return `${pts[2]}-${pts[1].padStart(2,'0')}-${pts[0].padStart(2,'0')}`;
   }
-  return str;
+  return val;
 }
 
-function parseCSV(text) {
-  const lines = text.trim().split(/\r?\n/);
-  const data = lines.slice(1).map(line => {
-    const columns = [];
-    let current = "", inQuotes = false;
-    for (let i = 0; i < line.length; i++) {
-      const char = line[i];
-      if (char === '"' && line[i+1] === '"') { current += '"'; i++; }
-      else if (char === '"') inQuotes = !inQuotes;
-      else if (char === ',' && !inQuotes) { columns.push(current.trim()); current = ""; }
-      else current += char;
+function processData(raw) {
+  const rows = raw.trim().split(/\r?\n/);
+  const result = rows.slice(1).map(row => {
+    const cols = [];
+    let cur = "", q = false;
+    for (let char of row) {
+      if (char === '"') q = !q;
+      else if (char === ',' && !q) { cols.push(cur.trim()); cur = ""; }
+      else cur += char;
     }
-    columns.push(current.trim());
+    cols.push(cur.trim());
     return {
-      tanggal: normalizeDate(columns[0]),
-      job: columns[1] || "Tanpa Judul",
-      area: columns[2] || "-",
-      member: columns[3] || "-",
-      jam: columns[4] || "-",
-      pic: columns[5] || "-",
-      status: columns[6] || "Menunggu",
-      docLink: (columns[7] || "").trim().replace(/\s/g, '')
+      tgl: fixDate(cols[0]),
+      job: cols[1] || "Untitled",
+      area: cols[2] || "-",
+      member: cols[3] || "-",
+      jam: cols[4] || "-",
+      pic: cols[5] || "-",
+      status: cols[6] || "Menunggu",
+      link: (cols[7] || "").trim()
     };
-  }).filter(i => i.tanggal !== "");
-
-  // Aturan Penyortiran:
-  // 1. Hari ini (Paling atas)
-  // 2. Status Selesai / Done (Kedua)
-  // 3. Sisanya (Terakhir)
-  return data.sort((a, b) => {
-    const isAToday = a.tanggal === todayStr;
-    const isBToday = b.tanggal === todayStr;
-    const isADone = a.status.toLowerCase().includes('selesai') || a.status.toLowerCase().includes('done');
-    const isBDone = b.status.toLowerCase().includes('selesai') || b.status.toLowerCase().includes('done');
-
-    // Prioritas 1: Hari Ini
-    if (isAToday && !isBToday) return -1;
-    if (!isAToday && isBToday) return 1;
-
-    // Prioritas 2: Status Selesai (hanya jika keduanya bukan hari ini)
-    if (!isAToday && !isBToday) {
-      if (isADone && !isBDone) return -1;
-      if (!isADone && isBDone) return 1;
-    }
-
-    // Default: Urutkan berdasarkan tanggal terbaru
-    return new Date(b.tanggal) - new Date(a.tanggal);
-  });
+  }).filter(r => r.tgl);
+  return result.sort((a, b) => (a.tgl === today && b.tgl !== today) ? -1 : (a.tgl !== today && b.tgl === today) ? 1 : new Date(b.tgl) - new Date(a.tgl));
 }
 
-function render() {
-  const container = document.getElementById("taskList");
-  const fDate = document.getElementById("filterTanggal").value;
-  const fArea = document.getElementById("filterArea").value;
-  const fSearch = document.getElementById("searchMember").value.toLowerCase();
+function getStatusInfo(status) {
+  const s = status.toLowerCase();
+  if (s.includes('selesai') || s === 'done') return { class: 'status-selesai', icon: 'check-circle' };
+  if (s.includes('tunggu')) return { class: 'status-menunggu', icon: 'clock' };
+  if (s.includes('proses')) return { class: 'status-proses', icon: 'play-circle' };
+  if (s.includes('batal')) return { class: 'status-batal', icon: 'x-circle' };
+  return { class: 'status-default', icon: 'info' };
+}
+
+function renderUI() {
+  const list = document.getElementById("cardsList");
+  const sQ = document.getElementById("searchInput").value.toLowerCase();
+  const aF = document.getElementById("areaFilter").value;
+  const dF = document.getElementById("dateFilter").value;
   
-  const filtered = allData.filter(d => 
-    (fDate ? d.tanggal === fDate : true) &&
-    (fArea ? d.area === fArea : true) &&
-    (fSearch ? (d.member.toLowerCase().includes(fSearch) || d.job.toLowerCase().includes(fSearch) || d.pic.toLowerCase().includes(fSearch)) : true)
+  const filtered = jobData.filter(j => 
+    (aF ? j.area === aF : true) && (dF ? j.tgl === dF : true) &&
+    (sQ ? (j.member.toLowerCase().includes(sQ) || j.job.toLowerCase().includes(sQ) || j.pic.toLowerCase().includes(sQ)) : true)
   );
 
-  if (!filtered.length) {
-    container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--m3-outline); font-size: 14px;">Data tidak ditemukan</div>`;
-    return;
-  }
-
-  container.innerHTML = filtered.map(item => {
-    const sLower = item.status.toLowerCase();
-    const isDone = sLower.includes('selesai') || sLower.includes('done');
-    const isProses = sLower.includes('proses');
-    const isToday = item.tanggal === todayStr;
-    const sType = isDone ? 'selesai' : (isProses ? 'proses' : 'menunggu');
+  list.innerHTML = filtered.map((j, i) => {
+    const isTod = j.tgl === today;
+    const variant = `m3-tonal-${i % 6}`;
+    const statusInfo = getStatusInfo(j.status);
     
     return `
-      <div class="task-card ${isDone ? 'is-done' : ''} ${isToday ? 'is-today' : ''}">
-        <div class="status-indicator ${sType}">
-          ${isDone ? '<i data-lucide="check" size="14"></i>' : ''}
+      <div class="job-card ${variant} ${isTod ? 'is-today' : ''}">
+        <div class="job-card-header">
+          <h3 class="task-title">${j.job}</h3>
+          <span class="status-tag ${statusInfo.class}"><i data-lucide="${statusInfo.icon}" size="12"></i> ${j.status}</span>
         </div>
-        <div class="task-content">
-          <div class="task-header">
-            <h3 class="task-title">${item.job}</h3>
-            <span class="m3-badge ${sType}">${item.status}</span>
-          </div>
-          
-          <div class="task-meta">
-            <div class="meta-item">
-              <i data-lucide="calendar" size="14"></i>
-              <span style="${isToday ? 'font-weight: 500; color: var(--m3-primary)' : ''}">
-                ${isToday ? 'Hari Ini' : item.tanggal}
-              </span>
-            </div>
-            <div class="meta-item"><i data-lucide="clock" size="14"></i><span>${item.jam}</span></div>
-            <div class="meta-item"><i data-lucide="map-pin" size="14"></i><span>${item.area}</span></div>
-          </div>
-          
-          <div class="task-meta" style="margin-top: 2px">
-            <div class="meta-item"><i data-lucide="user" size="14"></i><strong>${item.member}</strong></div>
-            <div class="meta-item" style="opacity: 0.7">PIC: ${item.pic}</div>
-          </div>
-          
-          ${item.docLink.startsWith('http') ? `
-            <button class="btn-m3-tonal" onclick="openDocSheet('${item.docLink}','${item.job.replace(/'/g,"\\\\'")}')">
-              <i data-lucide="file-text" size="18"></i> Lihat Dokumentasi
-            </button>
-          ` : ''}
+        <div class="info-row">
+          <div class="info-chip"><i data-lucide="calendar" size="12"></i><span>${isTod ? 'HARI INI' : j.tgl}</span></div>
+          <div class="info-chip"><i data-lucide="clock" size="12"></i><span>${j.jam}</span></div>
+          <div class="info-chip"><i data-lucide="navigation" size="12"></i><span>${j.area}</span></div>
         </div>
+        <div class="member-section">
+          <div style="font-weight:500;"><i data-lucide="users" size="14"></i> ${j.member}</div>
+          <div style="font-size:10px; opacity:0.6">PIC: ${j.pic}</div>
+        </div>
+        ${j.link.startsWith('http') ? `<button class="btn-doc" onclick="openDoc('${j.link.replace(/'/g, "\\'")}','${j.job.replace(/'/g, "\\Source")}')"><i data-lucide="file-text" size="14"></i> Lihat Dokumentasi</button>` : ''}
       </div>
     `;
   }).join('');
   lucide.createIcons();
 }
 
-async function init() {
+async function start() {
   try {
-    const res = await fetch(`${CSV_URL}&cb=${Date.now()}`);
-    const csv = await res.text();
-    allData = parseCSV(csv);
-    
-    const areaSelect = document.getElementById("filterArea");
-    [...new Set(allData.map(d => d.area))].filter(a => a && a !== "-").sort().forEach(a => {
-      const o = document.createElement("option"); o.value = a; o.textContent = a;
-      areaSelect.appendChild(o);
+    const r = await fetch(`${DATA_SOURCE}&_=${Date.now()}`);
+    const text = await r.text();
+    jobData = processData(text);
+    const sel = document.getElementById("areaFilter");
+    [...new Set(jobData.map(d => d.area))].filter(x => x && x !== "-").sort().forEach(a => {
+      const opt = document.createElement("option"); opt.value = a; opt.textContent = a;
+      sel.appendChild(opt);
     });
-
-    document.getElementById("loading").style.display = "none";
-    render();
-  } catch (e) {
-    document.getElementById("loading").innerHTML = "Gagal memuat data.";
-  }
+    document.getElementById("loader").style.display = "none";
+    renderUI();
+  } catch (err) { document.getElementById("loader").innerHTML = "Gagal memuat data."; }
 }
 
-function openDocSheet(l, t) {
-  isSheetOpen = true;
-  document.getElementById('docSheetTitle').innerText = t;
-  document.getElementById('docWebview').src = l.replace('/view', '/preview');
-  document.getElementById('externalLinkBtn').href = l;
-  document.getElementById('overlay').style.display = 'block';
-  
-  window.history.pushState({open: true}, "");
-  
+function openDoc(url, title) {
+  sheetActive = true;
+  document.getElementById('sheetTitle').innerText = title;
+  document.getElementById('sheetFrame').src = url.replace('/view', '/preview');
+  document.getElementById('outLink').href = url;
+  document.getElementById('sheetOverlay').style.display = 'block';
+  window.history.pushState({modal: true}, "");
   setTimeout(() => document.getElementById('docSheet').classList.add('active'), 10);
 }
 
-function closeAllSheets() {
-  if (!isSheetOpen) return;
-  isSheetOpen = false;
+function closeSheet() {
+  if (!sheetActive) return;
+  sheetActive = false;
   document.getElementById('docSheet').classList.remove('active');
   setTimeout(() => { 
-    document.getElementById('overlay').style.display = 'none'; 
-    document.getElementById('docWebview').src = ''; 
+    document.getElementById('sheetOverlay').style.display = 'none'; 
+    document.getElementById('sheetFrame').src = '';
   }, 300);
 }
 
-function handleBack() {
-  if (isSheetOpen) window.history.back();
-}
-
-window.addEventListener('popstate', () => {
-  closeAllSheets();
-});
-
-document.getElementById('overlay').onclick = handleBack;
-
-document.getElementById("filterTanggal").addEventListener("change", render);
-document.getElementById("filterArea").addEventListener("change", render);
-document.getElementById("searchMember").addEventListener("input", render);
-
-init();
+function goBack() { if (sheetActive) window.history.back(); }
+window.addEventListener('popstate', closeSheet);
+document.getElementById('sheetOverlay').onclick = goBack;
+document.getElementById("dateFilter").addEventListener("change", renderUI);
+document.getElementById("areaFilter").addEventListener("change", renderUI);
+document.getElementById("searchInput").addEventListener("input", renderUI);
+start();
 </script>
 </body>
 </html>
