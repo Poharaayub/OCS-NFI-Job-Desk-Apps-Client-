@@ -86,6 +86,7 @@
 
   .task-card {
     background: #fff; border-radius: 24px; padding: 20px; margin-bottom: 16px; border: 1px solid var(--m3-surface-variant); display: flex; flex-direction: column; gap: 16px; position: relative;
+    transition: transform 0.2s ease;
   }
 
   .task-card.is-today { 
@@ -116,7 +117,6 @@
   .task-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
   .task-title { font-family: 'Google Sans', sans-serif; font-size: 16px; font-weight: 500; margin: 0; color: var(--m3-on-surface); line-height: 1.3; }
 
-  /* Menambahkan coretan pada tugas yang selesai */
   .is-done .task-title { 
     text-decoration: line-through;
     text-decoration-thickness: 1.5px;
@@ -149,7 +149,6 @@
 
   .secure-tag-mini { display: flex; align-items: center; gap: 6px; color: var(--m3-primary); font-size: 11px; font-weight: 500; opacity: 0.8; }
 
-  /* Bottom Sheet Styles */
   .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); display: none; z-index: 100; backdrop-filter: blur(4px); }
   .sheet {
     position: fixed; bottom: -100%; left: 0; width: 100%; height: 95vh; background: var(--m3-surface); border-top-left-radius: 28px; border-top-right-radius: 28px; z-index: 101; transition: bottom 0.4s cubic-bezier(0.1, 0.9, 0.2, 1); display: flex; flex-direction: column; overflow: hidden;
@@ -165,6 +164,10 @@
   .loader { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px; gap: 16px; }
   .spinner { width: 32px; height: 32px; border: 3px solid var(--m3-secondary-container); border-top: 3px solid var(--m3-primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+  .section-label {
+    font-family: 'Google Sans', sans-serif; font-size: 12px; font-weight: 600; color: var(--m3-primary); margin: 24px 0 12px 4px; letter-spacing: 0.5px; text-transform: uppercase;
+  }
 </style>
 </head>
 <body>
@@ -274,13 +277,7 @@ function parseCSV(text) {
     };
   }).filter(i => i.tanggal !== "");
 
-  return data.sort((a, b) => {
-    const isAToday = a.tanggal === todayStr;
-    const isBToday = b.tanggal === todayStr;
-    if (isAToday && !isBToday) return -1;
-    if (!isAToday && isBToday) return 1;
-    return new Date(b.tanggal) - new Date(a.tanggal);
-  });
+  return data;
 }
 
 function render() {
@@ -289,6 +286,7 @@ function render() {
   const fArea = document.getElementById("filterArea").value;
   const fSearch = document.getElementById("searchMember").value.toLowerCase();
   
+  // 1. Filter data
   const filtered = allData.filter(d => 
     (fDate ? d.tanggal === fDate : true) && 
     (fArea ? d.area === fArea : true) &&
@@ -300,14 +298,59 @@ function render() {
     return;
   }
 
-  container.innerHTML = filtered.map(item => {
+  // 2. Sort data sesuai instruksi: Hari Ini -> Selesai -> Lainnya
+  const sorted = [...filtered].sort((a, b) => {
+    const isTodayA = a.tanggal === todayStr;
+    const isTodayB = b.tanggal === todayStr;
+    const isDoneA = (a.status.toLowerCase().includes('selesai') || a.status.toLowerCase().includes('done'));
+    const isDoneB = (b.status.toLowerCase().includes('selesai') || b.status.toLowerCase().includes('done'));
+
+    // Rule 1: Pekerjaan Hari Ini
+    if (isTodayA && !isTodayB) return -1;
+    if (!isTodayA && isTodayB) return 1;
+    
+    if (isTodayA && isTodayB) {
+      if (!isDoneA && isDoneB) return -1;
+      if (isDoneA && !isDoneB) return 1;
+      return 0;
+    }
+
+    // Rule 2: Pekerjaan Selesai
+    if (isDoneA && !isDoneB) return -1;
+    if (!isDoneA && isDoneB) return 1;
+
+    // Rule 3: Pekerjaan Lainnya
+    return new Date(b.tanggal) - new Date(a.tanggal);
+  });
+
+  // 3. Render
+  let html = "";
+  let lastCategory = "";
+
+  sorted.forEach(item => {
     const sLower = item.status.toLowerCase();
     const isDone = sLower.includes('selesai') || sLower.includes('done');
     const isProses = sLower.includes('proses');
     const isToday = item.tanggal === todayStr;
     const sType = isDone ? 'selesai' : (isProses ? 'proses' : 'menunggu');
+
+    // Menentukan kategori
+    let currentCategory = "";
+    if (isToday) currentCategory = "Pekerjaan Hari Ini";
+    else if (isDone) currentCategory = "Pekerjaan Selesai";
+    else currentCategory = ""; // Kosongkan label untuk pekerjaan lainnya
+
+    // Hanya tampilkan label jika ada kategori yang valid (bukan lainnya)
+    if (currentCategory !== "" && currentCategory !== lastCategory) {
+      html += `<div class="section-label">${currentCategory}</div>`;
+      lastCategory = currentCategory;
+    } else if (currentCategory === "" && lastCategory !== "") {
+        // Tambahkan sedikit jarak jika baru saja berpindah dari kategori berlabel ke yang tidak berlabel
+        html += `<div style="margin-top: 16px;"></div>`;
+        lastCategory = "";
+    }
     
-    return `
+    html += `
       <div class="task-card ${isDone ? 'is-done' : ''} ${isToday ? 'is-today' : ''}">
         <div class="task-main-row">
           <div class="status-indicator ${sType}">
@@ -333,13 +376,15 @@ function render() {
           <div class="doc-action-area">
             <div class="secure-tag-mini"><i data-lucide="lock" size="14"></i>Akses Terlindungi</div>
             <button class="btn-m3-tonal" onclick="openDocSheet('${item.docLink}','${item.job.replace(/'/g,"\\\\'")}')">
-              <i data-lucide="file-text" size="18"></i>Buka Dokumen
+              <i data-lucide="file-text" size="18"></i>Lihat Dokumentasi
             </button>
           </div>
         ` : ''}
       </div>
     `;
-  }).join('');
+  });
+  
+  container.innerHTML = html;
   lucide.createIcons();
 }
 
