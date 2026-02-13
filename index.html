@@ -26,9 +26,9 @@
     --m3-outline: #74777f;
     
     /* M3 Tonal Green for Completion Status */
-    --status-done: #386a20; /* M3 Green Primary */
-    --status-done-bg: #b7f397; /* M3 Green Container */
-    --status-on-done-bg: #042100; /* M3 On Green Container */
+    --status-done: #386a20; 
+    --status-done-bg: #b7f397; 
+    --status-on-done-bg: #042100; 
     
     --status-process: #3f5f91;
     --status-process-bg: #d6e3ff;
@@ -41,7 +41,7 @@
     background-color: var(--m3-surface); 
     color: var(--m3-on-surface);
     margin: 0;
-    padding-bottom: 40px;
+    padding-bottom: 100px; 
     font-size: 14px;
   }
 
@@ -102,39 +102,17 @@
     transition: all 0.3s ease;
   }
 
-  .status-indicator.selesai { 
-    border-color: var(--status-done); 
-    background: var(--status-done); 
-    color: #ffffff; 
-  }
-  .status-indicator.proses { 
-    border-color: var(--status-process); 
-    background: var(--status-process); 
-    color: #fff; 
-  }
+  .status-indicator.selesai { border-color: var(--status-done); background: var(--status-done); color: #ffffff; }
+  .status-indicator.proses { border-color: var(--status-process); background: var(--status-process); color: #fff; }
 
   .task-content { flex: 1; display: flex; flex-direction: column; gap: 8px; }
   .task-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
   .task-title { font-family: 'Google Sans', sans-serif; font-size: 16px; font-weight: 500; margin: 0; color: var(--m3-on-surface); line-height: 1.3; }
 
-  .is-done .task-title { 
-    text-decoration: line-through;
-    text-decoration-thickness: 1.5px;
-    opacity: 0.5; 
-  }
-  .is-done .task-card {
-    opacity: 0.8;
-  }
-
+  .is-done .task-title { text-decoration: line-through; opacity: 0.5; }
   .m3-badge { font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 12px; background: var(--m3-secondary-container); white-space: nowrap; }
-  .m3-badge.selesai { 
-    background: var(--status-done-bg); 
-    color: var(--status-on-done-bg); 
-  }
-  .m3-badge.proses { 
-    background: var(--status-process-bg); 
-    color: var(--status-process); 
-  }
+  .m3-badge.selesai { background: var(--status-done-bg); color: var(--status-on-done-bg); }
+  .m3-badge.proses { background: var(--status-process-bg); color: var(--status-process); }
 
   .task-meta { display: flex; flex-wrap: wrap; gap: 12px; color: var(--m3-on-surface-variant); font-size: 12px; }
   .meta-item { display: flex; align-items: center; gap: 6px; }
@@ -143,31 +121,94 @@
     margin-top: 4px; padding-top: 12px; border-top: 1px solid var(--m3-surface-variant); display: flex; align-items: center; justify-content: space-between;
   }
 
+  .secure-tag-mini {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--m3-on-surface-variant);
+    opacity: 0.7;
+    font-weight: 500;
+  }
+
   .btn-m3-tonal {
     background-color: var(--m3-primary-container); color: var(--m3-on-primary-container); border: none; border-radius: 20px; height: 40px; padding: 0 20px; font-family: 'Google Sans', sans-serif; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; cursor: pointer;
   }
 
-  .secure-tag-mini { display: flex; align-items: center; gap: 6px; color: var(--m3-primary); font-size: 11px; font-weight: 500; opacity: 0.8; }
-
-  .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); display: none; z-index: 100; backdrop-filter: blur(4px); }
-  .sheet {
-    position: fixed; bottom: -100%; left: 0; width: 100%; height: 95vh; background: var(--m3-surface); border-top-left-radius: 28px; border-top-right-radius: 28px; z-index: 101; transition: bottom 0.4s cubic-bezier(0.1, 0.9, 0.2, 1); display: flex; flex-direction: column; overflow: hidden;
+  /* FAB Style (Extended for Label) */
+  .fab-button {
+    position: fixed; 
+    right: 24px; 
+    bottom: 24px; 
+    min-width: 56px; 
+    height: 56px; 
+    padding: 0 20px;
+    background-color: var(--m3-primary-container); 
+    color: var(--m3-on-primary-container); 
+    border-radius: 16px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
+    cursor: pointer; 
+    border: none; 
+    z-index: 50; 
+    transition: transform 0.2s, background-color 0.2s;
   }
-  .sheet.active { bottom: 0; }
+  .fab-button span {
+    font-family: 'Google Sans', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.1px;
+  }
+  .fab-button:active { transform: scale(0.9); }
+
+  /* Bottom Sheet Overlay */
+  .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); display: none; z-index: 100; backdrop-filter: blur(4px); }
+  
+  /* Shared Sheet Style */
+  .sheet {
+    position: fixed; 
+    bottom: -100%; 
+    left: 0; 
+    width: 100%; 
+    height: 95vh; 
+    background: var(--m3-surface); 
+    border-top-left-radius: 28px; 
+    border-top-right-radius: 28px; 
+    z-index: 101; 
+    transition: bottom 0.4s cubic-bezier(0.1, 0.9, 0.2, 1), visibility 0.4s; 
+    display: flex; 
+    flex-direction: column; 
+    overflow: hidden;
+    visibility: hidden; 
+  }
+  .sheet.active { 
+    bottom: 0; 
+    visibility: visible; 
+  }
+  
+  /* Specific Style for Folder Menu Sheet */
+  .folder-menu-sheet { height: auto; max-height: 80vh; padding-bottom: 24px; }
   .sheet-header-handle { height: 4px; width: 32px; background: var(--m3-outline); opacity: 0.2; border-radius: 2px; margin: 12px auto 8px; flex-shrink: 0; }
+  
+  .menu-list { padding: 8px 16px; display: flex; flex-direction: column; gap: 4px; }
+  .menu-item {
+    display: flex; align-items: center; gap: 16px; padding: 16px; border-radius: 16px; background: transparent; border: none; width: 100%; text-align: left; cursor: pointer; color: var(--m3-on-surface); font-family: 'Google Sans'; font-size: 14px; font-weight: 500;
+  }
+  .menu-item:active { background: var(--m3-secondary-container); }
+  .menu-item i { color: var(--m3-primary); flex-shrink: 0; }
+  .menu-item span { line-height: 1.4; }
+
   .sheet-top-bar { padding: 8px 16px 16px; display: flex; align-items: center; border-bottom: 1px solid var(--m3-surface-variant); flex-shrink: 0; }
   .btn-icon-m3 { background: transparent; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--m3-on-surface-variant); }
   .secure-header-info { flex: 1; margin: 0 12px; overflow: hidden; }
   .secure-title { font-size: 15px; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: 'Google Sans'; font-weight: 500; color: var(--m3-on-surface); }
-  .secure-status { font-size: 11px; color: var(--m3-primary); display: flex; align-items: center; gap: 4px; font-weight: 500; }
-
+  
   .loader { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px; gap: 16px; }
   .spinner { width: 32px; height: 32px; border: 3px solid var(--m3-secondary-container); border-top: 3px solid var(--m3-primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-  .section-label {
-    font-family: 'Google Sans', sans-serif; font-size: 12px; font-weight: 600; color: var(--m3-primary); margin: 24px 0 12px 4px; letter-spacing: 0.5px; text-transform: uppercase;
-  }
 </style>
 </head>
 <body>
@@ -197,18 +238,43 @@
   <div id="taskList"></div>
 </main>
 
+<!-- Floating Action Button with GAHSE Label -->
+<button class="fab-button" id="fabFolders" onclick="openFolderMenu()">
+  <i data-lucide="folder" size="24"></i>
+  <span>GAHSE</span>
+</button>
+
+<!-- Overlay global -->
 <div class="overlay" id="overlay"></div>
-<div class="sheet" id="docSheet">
+
+<!-- Bottom Sheet: Folder Menu -->
+<div class="sheet folder-menu-sheet" id="folderMenuSheet">
+  <div class="sheet-header-handle"></div>
+  <div class="sheet-top-bar" style="border:none">
+    <!-- Judul diganti dari "Formulir Sanitasi" ke "GAHSE" -->
+    <h3 class="secure-title" style="margin-left:8px">GAHSE</h3>
+  </div>
+  <div class="menu-list">
+    <button class="menu-item" onclick="openDocSheet('https://docs.google.com/spreadsheets/d/1EWNg2OWzN9S8GWyPxizFtLNdHlnkbkjL/edit?usp=drivesdk&ouid=102104928025617234543&rtpof=true&sd=true', 'F.GAHSE.01.04 Checklist Sanitasi')">
+      <i data-lucide="clipboard-check"></i>
+      <span>F.GAHSE.01.04 Form Checklist Pengendalian Kebersihan Sanitasi Periodic All</span>
+    </button>
+    <button class="menu-item" onclick="openDocSheet('https://docs.google.com/spreadsheets/d/1yg3UJr7WpIodltZH1yti0wPaRj0aAdS0/edit?usp=drivesdk&ouid=102104928025617234543&rtpof=true&sd=true', 'F.GAHSE.03.02 Jadwal Sanitasi')">
+      <i data-lucide="calendar-range"></i>
+      <span>F.GAHSE.03.02 Form Jadwal Pengendalian Kebersihan dan Sanitasi</span>
+    </button>
+  </div>
+</div>
+
+<!-- Bottom Sheet: Document Viewer -->
+<div class="sheet" id="docViewerSheet">
   <div class="sheet-header-handle"></div>
   <div class="sheet-top-bar">
     <button class="btn-icon-m3" onclick="handleBack()">
-      <i data-lucide="x" size="24"></i>
+      <i data-lucide="arrow-left" size="24"></i>
     </button>
     <div class="secure-header-info">
       <h3 class="secure-title" id="docSheetTitle">Dokumen</h3>
-      <div class="secure-status">
-        <i data-lucide="shield-check" size="12"></i> Akses Privat
-      </div>
     </div>
     <a href="#" id="externalLinkBtn" target="_blank" class="btn-icon-m3" style="color: var(--m3-primary)">
       <i data-lucide="external-link" size="20"></i>
@@ -222,7 +288,7 @@
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSy72yhzMb2711VnnX-K1x6DG2-HNdlGRJfeORikr4x6ylI5ETjTaEjXzJ4KR0a632i65ZJpq667B-t/pub?output=csv";
 let allData = [];
-let isSheetOpen = false;
+let currentOpenSheet = null;
 
 function getTodayStr() {
   const d = new Date();
@@ -236,14 +302,9 @@ function parseCSVLine(line) {
   let inQuotes = false;
   for (let i = 0; i < line.length; i++) {
     const char = line[i];
-    if (char === '"') {
-      inQuotes = !inQuotes;
-    } else if (char === ',' && !inQuotes) {
-      result.push(curVal.trim());
-      curVal = "";
-    } else {
-      curVal += char;
-    }
+    if (char === '"') inQuotes = !inQuotes;
+    else if (char === ',' && !inQuotes) { result.push(curVal.trim()); curVal = ""; }
+    else curVal += char;
   }
   result.push(curVal.trim());
   return result;
@@ -262,8 +323,7 @@ function normalizeDate(str) {
 function parseCSV(text) {
   const lines = text.trim().split(/\r?\n/);
   if (lines.length <= 1) return [];
-
-  const data = lines.slice(1).map(line => {
+  return lines.slice(1).map(line => {
     const cols = parseCSVLine(line);
     return {
       tanggal: normalizeDate(cols[0]),
@@ -276,8 +336,6 @@ function parseCSV(text) {
       docLink: (cols[7] || "").trim()
     };
   }).filter(i => i.tanggal !== "");
-
-  return data;
 }
 
 function render() {
@@ -286,7 +344,6 @@ function render() {
   const fArea = document.getElementById("filterArea").value;
   const fSearch = document.getElementById("searchMember").value.toLowerCase();
   
-  // 1. Filter data
   const filtered = allData.filter(d => 
     (fDate ? d.tanggal === fDate : true) && 
     (fArea ? d.area === fArea : true) &&
@@ -294,39 +351,35 @@ function render() {
   );
 
   if (!filtered.length) {
-    container.innerHTML = `<div style="text-align:center; padding: 60px; color: var(--m3-outline);">Data tidak tersedia atau filter tidak cocok.</div>`;
+    container.innerHTML = `<div style="text-align:center; padding: 60px; color: var(--m3-outline);">Data tidak tersedia.</div>`;
     return;
   }
 
-  // 2. Sort data sesuai instruksi: Hari Ini -> Selesai -> Lainnya
   const sorted = [...filtered].sort((a, b) => {
     const isTodayA = a.tanggal === todayStr;
     const isTodayB = b.tanggal === todayStr;
-    const isDoneA = (a.status.toLowerCase().includes('selesai') || a.status.toLowerCase().includes('done'));
-    const isDoneB = (b.status.toLowerCase().includes('selesai') || b.status.toLowerCase().includes('done'));
 
-    // Rule 1: Pekerjaan Hari Ini
     if (isTodayA && !isTodayB) return -1;
     if (!isTodayA && isTodayB) return 1;
-    
-    if (isTodayA && isTodayB) {
-      if (!isDoneA && isDoneB) return -1;
-      if (isDoneA && !isDoneB) return 1;
-      return 0;
+
+    const dateA = new Date(a.tanggal);
+    const dateB = new Date(b.tanggal);
+    const now = new Date(todayStr);
+
+    const isFutureA = dateA > now;
+    const isFutureB = dateB > now;
+
+    if (isFutureA && !isFutureB) return -1;
+    if (!isFutureA && isFutureB) return 1;
+
+    if (isFutureA && isFutureB) {
+        return dateA - dateB || a.jam.localeCompare(b.jam);
+    } else {
+        return dateB - dateA || a.jam.localeCompare(b.jam);
     }
-
-    // Rule 2: Pekerjaan Selesai
-    if (isDoneA && !isDoneB) return -1;
-    if (!isDoneA && isDoneB) return 1;
-
-    // Rule 3: Pekerjaan Lainnya
-    return new Date(b.tanggal) - new Date(a.tanggal);
   });
 
-  // 3. Render
   let html = "";
-  let lastCategory = "";
-
   sorted.forEach(item => {
     const sLower = item.status.toLowerCase();
     const isDone = sLower.includes('selesai') || sLower.includes('done');
@@ -334,22 +387,6 @@ function render() {
     const isToday = item.tanggal === todayStr;
     const sType = isDone ? 'selesai' : (isProses ? 'proses' : 'menunggu');
 
-    // Menentukan kategori
-    let currentCategory = "";
-    if (isToday) currentCategory = "Pekerjaan Hari Ini";
-    else if (isDone) currentCategory = "Pekerjaan Selesai";
-    else currentCategory = ""; // Kosongkan label untuk pekerjaan lainnya
-
-    // Hanya tampilkan label jika ada kategori yang valid (bukan lainnya)
-    if (currentCategory !== "" && currentCategory !== lastCategory) {
-      html += `<div class="section-label">${currentCategory}</div>`;
-      lastCategory = currentCategory;
-    } else if (currentCategory === "" && lastCategory !== "") {
-        // Tambahkan sedikit jarak jika baru saja berpindah dari kategori berlabel ke yang tidak berlabel
-        html += `<div style="margin-top: 16px;"></div>`;
-        lastCategory = "";
-    }
-    
     html += `
       <div class="task-card ${isDone ? 'is-done' : ''} ${isToday ? 'is-today' : ''}">
         <div class="task-main-row">
@@ -374,7 +411,7 @@ function render() {
         </div>
         ${item.docLink.startsWith('http') ? `
           <div class="doc-action-area">
-            <div class="secure-tag-mini"><i data-lucide="lock" size="14"></i>Akses Terlindungi</div>
+            <div class="secure-tag-mini"><i data-lucide="lock" size="10"></i>Akses Privat</div>
             <button class="btn-m3-tonal" onclick="openDocSheet('${item.docLink}','${item.job.replace(/'/g,"\\\\'")}')">
               <i data-lucide="file-text" size="18"></i>Lihat Dokumentasi
             </button>
@@ -391,7 +428,6 @@ function render() {
 async function init() {
   try {
     const res = await fetch(`${CSV_URL}&cb=${Date.now()}`);
-    if (!res.ok) throw new Error("Gagal mengambil file CSV");
     const csv = await res.text();
     allData = parseCSV(csv);
     
@@ -404,36 +440,60 @@ async function init() {
     document.getElementById("loading").style.display = "none";
     render();
   } catch (e) {
-    console.error(e);
-    document.getElementById("loading").innerHTML = `<div style="color: #ba1a1a; text-align:center;">Gagal memuat data. Periksa koneksi atau publikasi Google Sheets.</div>`;
+    document.getElementById("loading").innerHTML = `<div style="color: #ba1a1a;">Gagal memuat data.</div>`;
   }
 }
 
-function openDocSheet(l, t) {
-  isSheetOpen = true;
-  document.getElementById('docSheetTitle').innerText = t;
-  document.getElementById('docWebview').src = l.includes('drive.google.com') ? l.replace('/view', '/preview') : l;
-  document.getElementById('externalLinkBtn').href = l;
+function openFolderMenu() {
+  currentOpenSheet = 'folderMenuSheet';
   document.getElementById('overlay').style.display = 'block';
-  window.history.pushState({open: true}, "");
-  setTimeout(() => document.getElementById('docSheet').classList.add('active'), 10);
+  window.history.pushState({sheet: 'menu'}, "");
+  setTimeout(() => document.getElementById('folderMenuSheet').classList.add('active'), 10);
 }
 
-function closeAllSheets() {
-  if (!isSheetOpen) return;
-  isSheetOpen = false;
-  document.getElementById('docSheet').classList.remove('active');
+function openDocSheet(l, t) {
+  if(currentOpenSheet === 'folderMenuSheet') {
+    document.getElementById('folderMenuSheet').classList.remove('active');
+  }
+
+  currentOpenSheet = 'docViewerSheet';
+  document.getElementById('docSheetTitle').innerText = t;
+  
+  let embedUrl = l;
+  if(l.includes('docs.google.com/spreadsheets')) {
+    embedUrl = l.split('/edit')[0] + '/preview';
+  } else if(l.includes('drive.google.com')) {
+    embedUrl = l.replace('/view', '/preview');
+  }
+
+  document.getElementById('docWebview').src = embedUrl;
+  document.getElementById('externalLinkBtn').href = l;
+  document.getElementById('overlay').style.display = 'block';
+  
+  window.history.pushState({sheet: 'doc'}, "");
+  setTimeout(() => document.getElementById('docViewerSheet').classList.add('active'), 10);
+}
+
+function closeSheets() {
+  if (!currentOpenSheet) return;
+  
+  document.getElementById('folderMenuSheet').classList.remove('active');
+  document.getElementById('docViewerSheet').classList.remove('active');
+  
   setTimeout(() => { 
-    document.getElementById('overlay').style.display = 'none'; 
-    document.getElementById('docWebview').src = ''; 
+    if(!document.querySelector('.sheet.active')) {
+      document.getElementById('overlay').style.display = 'none'; 
+      document.getElementById('docWebview').src = ''; 
+      currentOpenSheet = null;
+    }
   }, 300);
 }
 
 function handleBack() {
-  if (isSheetOpen) window.history.back();
+  window.history.back();
 }
 
-window.addEventListener('popstate', closeAllSheets);
+window.addEventListener('popstate', closeSheets);
 document.getElementById('overlay').onclick = handleBack;
 document.getElementById("filterTanggal").addEventListener("change", render);
 document.getElementById("filterArea").addEventListener("change", render);
