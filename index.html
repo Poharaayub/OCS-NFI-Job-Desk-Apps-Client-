@@ -293,29 +293,36 @@ function render() {
     return;
   }
 
-  // URUTAN TUGAS: Hari Ini -> Terdekat (Masa Depan) -> Terlama (Masa Lalu)
+  // Logika Pengurutan:
+  // 1. Hari Ini
+  // 2. Belum Selesai (Terdekat)
+  // 3. Selesai
   const sorted = [...filtered].sort((a, b) => {
-    const dateA = new Date(a.tanggal);
-    const dateB = new Date(b.tanggal);
-    const today = new Date(todayStr);
-
+    const isDoneA = a.status.toLowerCase().includes('selesai') || a.status.toLowerCase().includes('done');
+    const isDoneB = b.status.toLowerCase().includes('selesai') || b.status.toLowerCase().includes('done');
     const isTodayA = a.tanggal === todayStr;
     const isTodayB = b.tanggal === todayStr;
 
-    // 1. Prioritas: Hari Ini
+    // Prioritas 1: Hari Ini
     if (isTodayA && !isTodayB) return -1;
     if (!isTodayA && isTodayB) return 1;
+    if (isTodayA && isTodayB) {
+        if (!isDoneA && isDoneB) return -1;
+        if (isDoneA && !isDoneB) return 1;
+        return 0;
+    }
 
-    // 2. Prioritas: Masa Depan (Terdekat ke Hari Ini)
-    const diffA = dateA - today;
-    const diffB = dateB - today;
+    // Prioritas 2: Belum Selesai (Mendatang) vs Selesai
+    if (!isDoneA && isDoneB) return -1;
+    if (isDoneA && !isDoneB) return 1;
 
-    if (diffA > 0 && diffB > 0) return diffA - diffB;
-    if (diffA > 0 && diffB < 0) return -1;
-    if (diffA < 0 && diffB > 0) return 1;
+    // Jika sama-sama Belum Selesai: Urutkan tanggal Ascending (terdekat)
+    if (!isDoneA && !isDoneB) {
+        return new Date(a.tanggal) - new Date(b.tanggal);
+    }
 
-    // 3. Prioritas: Masa Lalu (Urutan Kronologis)
-    return dateA - dateB;
+    // Jika sama-sama Selesai: Urutkan tanggal Descending (terbaru)
+    return new Date(b.tanggal) - new Date(a.tanggal);
   });
 
   let html = "";
@@ -324,9 +331,8 @@ function render() {
     const isDone = sLower.includes('selesai') || sLower.includes('done');
     const isProses = sLower.includes('proses');
     const isToday = item.tanggal === todayStr;
-    
     const sType = isDone ? 'selesai' : (isProses ? 'proses' : 'menunggu');
-    
+
     html += `
       <div class="task-card ${isDone ? 'is-done' : ''} ${isToday ? 'is-today' : ''}">
         <div class="task-main-row">
