@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Job Monitor - Material 3 Tonal Green</title>
+<!-- Lucide Icons -->
 <script src="https://unpkg.com/lucide@latest"></script>
+<!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
@@ -43,42 +45,84 @@
     font-size: 14px;
   }
 
+  /* Header Wrapper */
   .controls-wrapper {
     position: sticky;
     top: 0;
-    background: rgba(249, 249, 255, 0.9);
-    backdrop-filter: blur(12px);
-    z-index: 10;
-    padding: 16px;
+    background: transparent;
+    z-index: 50;
+    padding: 16px 16px 8px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    border-bottom: 1px solid var(--m3-surface-variant);
+    gap: 10px;
+  }
+
+  /* Efek Kaca (Glassmorphism) */
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.35); /* Transparansi putih tipis */
+    backdrop-filter: blur(16px) saturate(180%); /* Blur kuat & saturasi warna di belakang */
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.4); /* Border putih transparan sebagai highlight kaca */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
   }
 
   .search-container {
-    background: var(--m3-secondary-container);
     border-radius: 28px;
     padding: 0 16px;
-    height: 48px;
+    height: 52px;
     display: flex;
     align-items: center;
     gap: 12px;
   }
 
   .search-container input {
-    background: transparent; border: none; outline: none; flex: 1; font-size: 15px; color: var(--m3-on-surface);
+    background: transparent; 
+    border: none; 
+    outline: none; 
+    flex: 1; 
+    font-size: 15px; 
+    color: var(--m3-on-surface);
+    font-weight: 400;
+  }
+  
+  .search-container input::placeholder {
+    color: var(--m3-on-surface-variant);
+    opacity: 0.7;
   }
 
-  /* Mengubah ke 1fr agar input tanggal memenuhi lebar */
-  .filter-row { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .filter-row { 
+    display: grid; 
+    grid-template-columns: 1fr; 
+    gap: 8px; 
+  }
 
   .filter-chip {
-    display: flex; align-items: center; gap: 8px; padding: 0 12px; height: 40px; border: 1px solid var(--m3-outline); border-radius: 10px; background: transparent; color: var(--m3-on-surface-variant);
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    padding: 0 14px; 
+    height: 44px; 
+    border-radius: 12px;
+    color: var(--m3-on-surface);
   }
 
-  .filter-chip select, .filter-chip input {
-    border: none; outline: none; background: transparent; font-size: 13px; color: inherit; font-family: inherit; width: 100%; cursor: pointer;
+  .filter-chip input {
+    border: none; 
+    outline: none; 
+    background: transparent; 
+    font-size: 14px; 
+    color: inherit; 
+    font-family: inherit; 
+    width: 100%; 
+    cursor: pointer;
+  }
+
+  /* Style untuk input date agar ikon bawaan tidak merusak estetika */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    filter: invert(0.2);
   }
 
   .tasks-container { max-width: 650px; margin: 0 auto; padding: 16px; }
@@ -168,13 +212,16 @@
 <body>
 
 <div class="controls-wrapper">
-  <div class="search-container">
+  <!-- Kolom Pencarian dengan efek Glass -->
+  <div class="search-container glass-effect">
     <i data-lucide="search" size="20" style="color: var(--m3-on-surface-variant)"></i>
     <input type="text" id="searchMember" placeholder="Cari member, tugas, atau PIC...">
   </div>
+  
   <div class="filter-row">
-    <div class="filter-chip">
-      <i data-lucide="calendar" size="18"></i>
+    <!-- Filter Tanggal dengan efek Glass -->
+    <div class="filter-chip glass-effect">
+      <i data-lucide="calendar" size="18" style="color: var(--m3-primary)"></i>
       <input type="date" id="filterTanggal">
     </div>
   </div>
@@ -274,7 +321,6 @@ function parseCSV(text) {
 function render() {
   const container = document.getElementById("taskList");
   const fDate = document.getElementById("filterTanggal").value;
-  // fArea dihapus, namun logika filter tetap aman dengan true
   const fSearch = document.getElementById("searchMember").value.toLowerCase();
   
   const filtered = allData.filter(d => 
@@ -364,8 +410,6 @@ async function init() {
     const csv = await res.text();
     allData = parseCSV(csv);
     
-    // Inisialisasi filter area dihapus dari sini
-    
     document.getElementById("loading").style.display = "none";
     render();
   } catch (e) {
@@ -407,3 +451,4 @@ init();
 </script>
 </body>
 </html>
+
