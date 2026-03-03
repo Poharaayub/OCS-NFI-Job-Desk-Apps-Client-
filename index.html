@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Job Monitor - Material 3 Tonal Green</title>
-<!-- Lucide Icons -->
 <script src="https://unpkg.com/lucide@latest"></script>
-<!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
@@ -72,7 +70,8 @@
     background: transparent; border: none; outline: none; flex: 1; font-size: 15px; color: var(--m3-on-surface);
   }
 
-  .filter-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  /* Mengubah ke 1fr agar input tanggal memenuhi lebar */
+  .filter-row { display: grid; grid-template-columns: 1fr; gap: 8px; }
 
   .filter-chip {
     display: flex; align-items: center; gap: 8px; padding: 0 12px; height: 40px; border: 1px solid var(--m3-outline); border-radius: 10px; background: transparent; color: var(--m3-on-surface-variant);
@@ -175,10 +174,6 @@
   </div>
   <div class="filter-row">
     <div class="filter-chip">
-      <i data-lucide="map-pin" size="18"></i>
-      <select id="filterArea"><option value="">Semua Area</option></select>
-    </div>
-    <div class="filter-chip">
       <i data-lucide="calendar" size="18"></i>
       <input type="date" id="filterTanggal">
     </div>
@@ -279,12 +274,11 @@ function parseCSV(text) {
 function render() {
   const container = document.getElementById("taskList");
   const fDate = document.getElementById("filterTanggal").value;
-  const fArea = document.getElementById("filterArea").value;
+  // fArea dihapus, namun logika filter tetap aman dengan true
   const fSearch = document.getElementById("searchMember").value.toLowerCase();
   
   const filtered = allData.filter(d => 
     (fDate ? d.tanggal === fDate : true) && 
-    (fArea ? d.area === fArea : true) &&
     (fSearch ? (d.member.toLowerCase().includes(fSearch) || d.job.toLowerCase().includes(fSearch) || d.pic.toLowerCase().includes(fSearch)) : true)
   );
 
@@ -293,17 +287,12 @@ function render() {
     return;
   }
 
-  // Logika Pengurutan:
-  // 1. Hari Ini
-  // 2. Belum Selesai (Terdekat)
-  // 3. Selesai
   const sorted = [...filtered].sort((a, b) => {
     const isDoneA = a.status.toLowerCase().includes('selesai') || a.status.toLowerCase().includes('done');
     const isDoneB = b.status.toLowerCase().includes('selesai') || b.status.toLowerCase().includes('done');
     const isTodayA = a.tanggal === todayStr;
     const isTodayB = b.tanggal === todayStr;
 
-    // Prioritas 1: Hari Ini
     if (isTodayA && !isTodayB) return -1;
     if (!isTodayA && isTodayB) return 1;
     if (isTodayA && isTodayB) {
@@ -312,16 +301,13 @@ function render() {
         return 0;
     }
 
-    // Prioritas 2: Belum Selesai (Mendatang) vs Selesai
     if (!isDoneA && isDoneB) return -1;
     if (isDoneA && !isDoneB) return 1;
 
-    // Jika sama-sama Belum Selesai: Urutkan tanggal Ascending (terdekat)
     if (!isDoneA && !isDoneB) {
         return new Date(a.tanggal) - new Date(b.tanggal);
     }
 
-    // Jika sama-sama Selesai: Urutkan tanggal Descending (terbaru)
     return new Date(b.tanggal) - new Date(a.tanggal);
   });
 
@@ -378,11 +364,7 @@ async function init() {
     const csv = await res.text();
     allData = parseCSV(csv);
     
-    const areaSelect = document.getElementById("filterArea");
-    [...new Set(allData.map(d => d.area))].filter(a => a && a !== "-").sort().forEach(a => {
-      const o = document.createElement("option"); o.value = a; o.textContent = a;
-      areaSelect.appendChild(o);
-    });
+    // Inisialisasi filter area dihapus dari sini
     
     document.getElementById("loading").style.display = "none";
     render();
@@ -419,11 +401,9 @@ function handleBack() {
 window.addEventListener('popstate', closeAllSheets);
 document.getElementById('overlay').onclick = handleBack;
 document.getElementById("filterTanggal").addEventListener("change", render);
-document.getElementById("filterArea").addEventListener("change", render);
 document.getElementById("searchMember").addEventListener("input", render);
 
 init();
 </script>
 </body>
 </html>
-
