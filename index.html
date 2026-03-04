@@ -118,7 +118,6 @@
     cursor: pointer;
   }
 
-  /* Style untuk input date agar ikon bawaan tidak merusak estetika */
   input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
     opacity: 0.6;
@@ -212,14 +211,12 @@
 <body>
 
 <div class="controls-wrapper">
-  <!-- Kolom Pencarian dengan efek Glass -->
   <div class="search-container glass-effect">
     <i data-lucide="search" size="20" style="color: var(--m3-on-surface-variant)"></i>
     <input type="text" id="searchMember" placeholder="Cari member, tugas, atau PIC...">
   </div>
   
   <div class="filter-row">
-    <!-- Filter Tanggal dengan efek Glass -->
     <div class="filter-chip glass-effect">
       <i data-lucide="calendar" size="18" style="color: var(--m3-primary)"></i>
       <input type="date" id="filterTanggal">
@@ -267,6 +264,28 @@ function getTodayStr() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 const todayStr = getTodayStr();
+
+// Helper untuk mendapatkan nama hari dalam Bahasa Indonesia
+function getDayName(dateStr) {
+  if (!dateStr) return "";
+  const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+  const date = new Date(dateStr);
+  return days[date.getDay()];
+}
+
+// Helper baru untuk format Tanggal Bulan Tahun
+function formatDateIndo(dateStr) {
+  if (!dateStr) return "";
+  const months = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+  ];
+  const date = new Date(dateStr);
+  const d = date.getDate();
+  const m = months[date.getMonth()];
+  const y = date.getFullYear();
+  return `${d} ${m} ${y}`;
+}
 
 function parseCSVLine(line) {
   const result = [];
@@ -349,11 +368,7 @@ function render() {
 
     if (!isDoneA && isDoneB) return -1;
     if (isDoneA && !isDoneB) return 1;
-
-    if (!isDoneA && !isDoneB) {
-        return new Date(a.tanggal) - new Date(b.tanggal);
-    }
-
+    if (!isDoneA && !isDoneB) return new Date(a.tanggal) - new Date(b.tanggal);
     return new Date(b.tanggal) - new Date(a.tanggal);
   });
 
@@ -364,6 +379,9 @@ function render() {
     const isProses = sLower.includes('proses');
     const isToday = item.tanggal === todayStr;
     const sType = isDone ? 'selesai' : (isProses ? 'proses' : 'menunggu');
+    
+    const dayName = getDayName(item.tanggal);
+    const dateFormatted = formatDateIndo(item.tanggal);
 
     html += `
       <div class="task-card ${isDone ? 'is-done' : ''} ${isToday ? 'is-today' : ''}">
@@ -377,7 +395,10 @@ function render() {
               <span class="m3-badge ${sType}">${item.status.toUpperCase()}</span>
             </div>
             <div class="task-meta">
-              <div class="meta-item"><i data-lucide="calendar" size="14"></i><span>${isToday ? '<b>Hari Ini</b>' : item.tanggal}</span></div>
+              <div class="meta-item">
+                <i data-lucide="calendar" size="14"></i>
+                <span>${dayName}, ${isToday ? '<b>Hari Ini</b>' : dateFormatted}</span>
+              </div>
               <div class="meta-item"><i data-lucide="clock" size="14"></i><span>${item.jam}</span></div>
               <div class="meta-item"><i data-lucide="map-pin" size="14"></i><span>${item.area}</span></div>
             </div>
